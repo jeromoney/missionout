@@ -1,15 +1,10 @@
 package com.beaterboofs
 
-import android.util.Log
-import androidx.lifecycle.LiveData
 import com.beaterboofs.missionout.Mission
-import com.beaterboofs.missionout.ui.mission.MissionViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 object FirestoreRepository {

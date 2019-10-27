@@ -1,6 +1,5 @@
 package com.beaterboofs.missionout.ui.mission
 
-import android.content.Intent
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.util.Log
@@ -10,8 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.SpinnerAdapter
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.beaterboofs.FirestoreRepository
@@ -19,7 +16,7 @@ import com.beaterboofs.missionout.BR
 import com.beaterboofs.missionout.Mission
 import com.beaterboofs.missionout.MissionActivity
 import com.beaterboofs.missionout.R
-import com.beaterboofs.missionout.databinding.MissionFragmentBinding
+import com.beaterboofs.missionout.databinding.FragmentMissionDisplayBinding
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
@@ -27,26 +24,22 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.iid.FirebaseInstanceId
 
-import kotlinx.android.synthetic.main.mission_fragment.*
-import kotlinx.android.synthetic.main.mission_fragment.view.*
-import java.sql.Time
-import java.sql.Timestamp
-import java.util.*
+import kotlinx.android.synthetic.main.fragment_mission_display.*
 
 
-class MissionFragment : Fragment() {
+class DisplayMissionFragment : Fragment() {
     companion object {
-        fun newInstance() = MissionFragment()
-        val TAG = "MissionFragment"
+        fun newInstance() = DisplayMissionFragment()
+        val TAG = "DisplayMissionFragment"
     }
 
-    private lateinit var viewModel: MissionViewModel
+    private lateinit var viewModel: DisplayMissionViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.mission_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_mission_display, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -67,11 +60,11 @@ class MissionFragment : Fragment() {
                 Log.d(TAG, msg)
             })
 
-        viewModel = ViewModelProviders.of(this).get(MissionViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(DisplayMissionViewModel::class.java)
 
 
-        val binding: MissionFragmentBinding =
-            DataBindingUtil.setContentView<MissionFragmentBinding>(this.requireActivity(), R.layout.mission_fragment)
+        val binding: FragmentMissionDisplayBinding =
+            DataBindingUtil.setContentView<FragmentMissionDisplayBinding>(this.requireActivity(), R.layout.fragment_mission_display)
         binding.lifecycleOwner = this
         // set onClickListener for FAB
         binding.createMission.setOnClickListener{

@@ -2,7 +2,7 @@ package com.beaterboofs.missionout
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.beaterboofs.missionout.ui.mission.MissionFragment
+import com.beaterboofs.missionout.ui.mission.DisplayMissionFragment
 
 class MissionActivity : AppCompatActivity() {
 
@@ -11,7 +11,7 @@ class MissionActivity : AppCompatActivity() {
         setContentView(R.layout.mission_activity)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, MissionFragment.newInstance())
+                .replace(R.id.container, DisplayMissionFragment.newInstance())
                 .commitNow()
         }
     }
