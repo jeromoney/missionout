@@ -12,7 +12,7 @@
             />
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -24,15 +24,26 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:text="@{missionInstance.description}"
-            tools:text="Name"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Name" />
 
         <TextView
-            android:id="@+id/time_text_view"
+            android:id="@+id/need_for_action_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/description_text_view"
             android:padding="16dp"
-            android:text="@{missionInstance.time.toString()}"
+            android:text="@{missionInstance.needForAction}"
+            tools:text="XX" />
+
+        <TextView
+            android:id="@+id/location_description_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/need_for_action_text_view"
+            android:padding="16dp"
+            android:text="@{missionInstance.locationDescription}"
             tools:text="XX"
             />
 
@@ -40,11 +51,171 @@
             android:id="@+id/location_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/location_description_text_view"
             android:padding="16dp"
             android:text="@{missionInstance.location.toString()}"
             tools:text="XX"
             />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/time_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/location_text_view"
+            android:padding="16dp"
+            android:text="@{missionInstance.time.toString()}"
+            tools:text="XX"
+            />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/responding_dropdown"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:hint="@string/responding"
+            app:layout_constraintTop_toBottomOf="@id/time_text_view"
+            >
+
+            <AutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/responding_dropdown_items"
+                android:editable="false"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <TextView
+            android:id="@+id/response_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/responding_dropdown"
+            android:padding="16dp"
+            android:text="@{missionInstance.responseMap.toString()}"
+            tools:text="XX"
+            />
+
+
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/mission_description_edit_text"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/mission_description_edit_text"
+            app:layout_constraintTop_toBottomOf="@id/location_text_view">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/mission_description_edit_text_val"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/need_for_action_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/need_for_action_edit_text"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+            app:layout_constraintTop_toBottomOf="@id/mission_description_edit_text"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/need_for_action_edit_text_val"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/location_description_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/location_description_edit_text"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+            app:layout_constraintTop_toBottomOf="@id/need_for_action_edit_text"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/location_description_edit_text_val"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/lat_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/lat_edit_text"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+            app:layout_constraintTop_toBottomOf="@id/location_description_edit_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/lat_edit_text_val"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/lon_edit_text"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/lon_edit_text"
+            app:layout_constraintTop_toBottomOf="@id/lat_edit_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/lon_edit_text_val"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/edit_text_group"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:constraint_referenced_ids=
+                "create_mission,mission_description_edit_text,need_for_action_edit_text,location_description_edit_text,lon_edit_text,lat_edit_text"/>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/text_view_group"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            app:constraint_referenced_ids=
+                "alarm_fab,description_text_view,time_text_view,location_text_view,responding_dropdown,location_description_text_view,need_for_action_text_view"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/create_mission"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@android:drawable/ic_menu_send" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/alarm_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@android:drawable/ic_menu_send" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </layout>

@@ -8,7 +8,10 @@ import android.content.Intent
 
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.beaterboofs.missionout.MissionActivity
+import com.beaterboofs.missionout.MissionOverviewActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -36,6 +39,8 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var googleSignInClient: GoogleSignInClient
 
+    private lateinit var missionOverviewButton: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_google_sign_in)
@@ -44,6 +49,11 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
         signInButton.setOnClickListener(this)
         signOutButton.setOnClickListener(this)
         disconnectButton.setOnClickListener(this)
+
+        // TODO - REMOVE THIS IN PRODUCTION
+        missionOverviewButton = findViewById<Button>(R.id.missionOverviewButton)
+        missionOverviewButton.setOnClickListener(this)
+
 
         // [START config_signin]
         // Configure Google Sign In
@@ -165,6 +175,13 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
             signOutAndDisconnect.visibility = View.GONE
         }
     }
+    //TODO - REMOVE IN PRODUCTION VERSION
+    fun missionOverview(){
+        intent = Intent(this, MissionOverviewActivity::class.java).apply {
+            putExtra("user", "nothing")
+        }
+        startActivity(intent)
+    }
 
     override fun onClick(v: View) {
         val i = v.id
@@ -172,6 +189,7 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
             R.id.signInButton -> signIn()
             R.id.signOutButton -> signOut()
             R.id.disconnectButton -> revokeAccess()
+            R.id.missionOverviewButton -> missionOverview() //TODO - REMOVE IN PRODUCTION
         }
     }
 

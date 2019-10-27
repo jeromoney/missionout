@@ -18,9 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.beaterboofs.missionout.MissionOverviewActivity"
+            android:name=".MissionOverviewActivity"
             android:label="@string/title_activity_mission_overview"
-            android:parentActivityName="com.beaterboofs.missionout.ui.main.GoogleSignInActivity"
+            android:parentActivityName=".ui.main.GoogleSignInActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -34,17 +34,16 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
-
         <activity
-            android:name="com.beaterboofs.missionout.MapsActivity"
-            android:label="@string/title_activity_maps" />
-        <activity android:name="com.beaterboofs.missionout.MissionActivity" />
+            android:name=".MissionActivity"
+            android:parentActivityName=".MissionOverviewActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.beaterboofs.missionout.MissionOverviewActivity" />
+        </activity>
 
         <service
-            android:name="com.beaterboofs.missionout.MissionFirebaseMessagingService"
+            android:name=".MissionFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -52,19 +51,16 @@
         </service>
 
         <activity
-            android:name="com.beaterboofs.missionout.ui.main.GoogleSignInActivity"
+            android:name=".ui.main.GoogleSignInActivity"
             android:label="@string/title_activity_google_sign_in"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.beaterboofs.missionout.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.beaterboofs.missionout.ui.main.FirebaseUIActivity"
-            android:label="@string/app_name" />
     </application>
 
 </manifest>

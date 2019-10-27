@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array
+    name="responding_dropdown_menu">
+    <item>Responding</item>
+    <item>Delayed</item>
+    <item>Standby</item>
+    <item>Unavailable</item>
+    </string-array>
+</resources>

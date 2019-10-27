@@ -8,6 +8,7 @@ import android.os.Bundle
 import com.beaterboofs.missionout.ui.main.GoogleSignInActivity
 import com.google.firebase.auth.FirebaseAuth
 
+
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,19 +36,22 @@ class MainActivity : AppCompatActivity() {
 
         // direct user based on sign in status
         val user = FirebaseAuth.getInstance().currentUser
+
+
+
         val intent: Intent
-        if (user == null) {
+        //if (user == null) {
             // if user has not signed in, direct them to the sign in page
             intent = Intent(this, GoogleSignInActivity::class.java).apply {
                 putExtra("user", "nothing")
             }
-        }
-        else {
-            // user has already signed in,
-            intent = Intent(this, MissionOverviewActivity::class.java).apply {
-                putExtra("user", "nothing")
-            }
-        }
+
+//        else {
+//            // user has already signed in,
+//            intent = Intent(this, MissionActivity::class.java).apply {
+//                putExtra("user", "nothing")
+//            }
+//        }
         startActivity(intent)
     }
 
