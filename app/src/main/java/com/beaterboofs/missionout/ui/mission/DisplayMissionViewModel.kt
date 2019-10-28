@@ -8,13 +8,13 @@ import kotlinx.coroutines.Dispatchers
 
 class DisplayMissionViewModel : ViewModel() {
     var docId: String? = null
+    lateinit var cachedMission: Mission
 
     companion object {
         val TAG = "DisplayMissionViewModel"
     }
 
     private val missionInstance: LiveData<Mission> = liveData(Dispatchers.IO) {
-        val cachedMission = Mission() // TODO - replace this with cached version
         emit(cachedMission)
 
         //val actualMission = FirestoreRepository.loadMission("4l6OAaCyVyLAaN9tUrSR")

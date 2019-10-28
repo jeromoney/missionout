@@ -13,6 +13,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.beaterboofs.FirestoreRepository
 import com.beaterboofs.missionout.BR
+import com.beaterboofs.missionout.Mission
 import com.beaterboofs.missionout.MissionActivity
 import com.beaterboofs.missionout.R
 import com.beaterboofs.missionout.databinding.FragmentMissionDisplayBinding
@@ -26,8 +27,13 @@ import kotlinx.android.synthetic.main.fragment_mission_display.*
 
 class DisplayMissionFragment : Fragment() {
     companion object {
-        fun newInstance() = DisplayMissionFragment()
+        @JvmStatic
+        fun newInstance(missionVal: Mission) =
+            DisplayMissionFragment().apply {
+                mission = missionVal
+            }
         val TAG = "DisplayMissionFragment"
+        private var mission: Mission? = null
     }
 
     private lateinit var viewModel: DisplayMissionViewModel
@@ -58,6 +64,7 @@ class DisplayMissionFragment : Fragment() {
             })
 
         viewModel = ViewModelProviders.of(this).get(DisplayMissionViewModel::class.java)
+        viewModel.cachedMission = mission!!
 
 
         val binding: FragmentMissionDisplayBinding =
