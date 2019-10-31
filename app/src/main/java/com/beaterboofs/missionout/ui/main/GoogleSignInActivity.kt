@@ -1,25 +1,32 @@
 package com.beaterboofs.missionout.ui.main
 
+import android.annotation.TargetApi
+import android.content.Context
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import com.beaterboofs.missionout.R
 
 import android.content.Intent
+import android.content.SharedPreferences
+import android.os.Build
 
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.beaterboofs.missionout.MissionActivity
-import com.beaterboofs.missionout.MissionOverviewActivity
+import androidx.preference.PreferenceManager
+import com.beaterboofs.missionout.OverviewMissionActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_google.detail
 import kotlinx.android.synthetic.main.activity_google.disconnectButton
 import kotlinx.android.synthetic.main.activity_google.main_layout
@@ -27,6 +34,12 @@ import kotlinx.android.synthetic.main.activity_google.signInButton
 import kotlinx.android.synthetic.main.activity_google.signOutAndDisconnect
 import kotlinx.android.synthetic.main.activity_google.signOutButton
 import kotlinx.android.synthetic.main.activity_google.status
+import kotlinx.android.synthetic.main.activity_google_sign_in.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+
 
 /**
  * Demonstrate Firebase Authentication using a Google ID Token.
@@ -41,6 +54,7 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var missionOverviewButton: Button
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_google_sign_in)
@@ -53,6 +67,7 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
         // TODO - REMOVE THIS IN PRODUCTION
         missionOverviewButton = findViewById<Button>(R.id.missionOverviewButton)
         missionOverviewButton.setOnClickListener(this)
+        getTokenButton.setOnClickListener(this)
 
 
         // [START config_signin]
@@ -92,6 +107,9 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
                 // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account!!)
+
+
+
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e)
@@ -118,6 +136,10 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
                     Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
                     updateUI(user)
+                    updateSharedPreferences(user)
+                    // delete instance id to make sure it aligns with user accounts
+                    GlobalScope.launch {FirebaseInstanceId.getInstance().deleteInstanceId() } // TODO - remove globals scope
+
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
@@ -129,6 +151,23 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
                 //hideProgressDialog()
                 // [END_EXCLUDE]
             }
+    }
+
+    // Places editor status and path to team document in Shared Preferences for easier access.
+    // Will this cause problem with stale information?
+    private fun updateSharedPreferences(firebaseUser: FirebaseUser?) {
+        var i = 1
+        firebaseUser?.getIdToken(true)?.addOnSuccessListener { result -> // TODO - convert to coroutine
+            val isEditor = result?.claims?.getOrDefault("editor", false)
+            val teamDocId = result?.claims?.getOrDefault("teamDocID", null)
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+            with (sharedPreferences.edit()) {
+                putBoolean("editor", (isEditor as Boolean?)!!)
+                putString("teamDocID", teamDocId as String?)
+                commit()
+            }
+        }
+
     }
     // [END auth_with_google]
 
@@ -177,7 +216,7 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
     }
     //TODO - REMOVE IN PRODUCTION VERSION
     fun missionOverview(){
-        intent = Intent(this, MissionOverviewActivity::class.java).apply {
+        intent = Intent(this, OverviewMissionActivity::class.java).apply {
             putExtra("user", "nothing")
         }
         startActivity(intent)
@@ -190,6 +229,7 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
             R.id.signOutButton -> signOut()
             R.id.disconnectButton -> revokeAccess()
             R.id.missionOverviewButton -> missionOverview() //TODO - REMOVE IN PRODUCTION
+            R.id.getTokenButton -> getToken() //TODO - REMOVE IN PRODUCTION
         }
     }
 
@@ -198,6 +238,24 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
         private const val RC_SIGN_IN = 9001
     }
 
+    //TODO - REMOVE IN PRODUCTION VERSION
+    fun getToken(){
+        FirebaseInstanceId.getInstance().instanceId
+            .addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w(TAG, "getInstanceId failed", task.exception)
+                    return@OnCompleteListener
+                }
+
+                // Get new Instance ID token
+                val token = task.result?.token
+
+                // Log and toast
+                val msg = token.toString()
+                Log.d(TAG, msg)
+                Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+            })
+    }
 
 
 }

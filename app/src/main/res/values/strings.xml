@@ -203,4 +203,9 @@
     <string name="lon_edit_text">Lon</string>
     <string name="responding">Responding?</string>
     <string name="title_activity_delete_me">DeleteMeActivity</string>
+    <string name="required_error">required</string>
+    <string name="number_error">Must be blank or number</string>
+    <string name="alarm_channel_name">Mission Out Alarm</string>
+    <string name="alarm_channel_description">MissionOut alarms are sent on this channel</string>
+    <string name="latlonerror">Leave both lat and lon blank if unknown</string>
 </resources>

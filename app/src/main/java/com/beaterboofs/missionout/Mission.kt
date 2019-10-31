@@ -9,14 +9,12 @@ import com.google.firebase.firestore.ServerTimestamp
 import kotlinx.android.parcel.Parceler
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.parcel.RawValue
-import java.io.Serializable
-import java.util.*
 import kotlin.collections.HashMap
 
 data class Mission(
     @PropertyName("description") var description: String,
     @ServerTimestamp var  time: Timestamp? = null,
-    @PropertyName("location") var location: GeoPoint?,
+    @PropertyName("location")  var location: GeoPoint?,
     @PropertyName("needForAction") var needForAction: String?,
     @PropertyName("locationDescription") var locationDescription: String?,
     @PropertyName("responseMap") var responseMap: HashMap<String,String>?,

@@ -93,6 +93,16 @@
             android:layout_marginEnd="0dp"
             android:text="Mission Overview DEBUG" />
 
+        <Button
+            android:id="@+id/getTokenButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/signOutAndDisconnect"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="323dp"
+            android:layout_marginBottom="19dp"
+            android:text="get client token" />
+
     </RelativeLayout>
 
 </LinearLayout>

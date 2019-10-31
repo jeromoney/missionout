@@ -19,7 +19,6 @@ class MissionAdapter(var missionDataset: List<Mission>, val clickListener: (Miss
         val textView = LayoutInflater.from(parent.context)
             .inflate(R.layout.mission_text_view, parent, false) as TextView
         // set view's size, margins, padding and layout parameters
-
         return MissionViewHolder(textView)
     }
 

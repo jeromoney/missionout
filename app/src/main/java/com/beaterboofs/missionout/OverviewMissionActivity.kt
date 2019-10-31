@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.toObjects
 
 import kotlinx.android.synthetic.main.activity_mission_overview.*
@@ -17,11 +18,11 @@ import kotlinx.android.synthetic.main.activity_mission_overview.*
  *
  * The add button (only displayed for editors) sends user to create new mission.
  */
-class MissionOverviewActivity : AppCompatActivity() {
+class OverviewMissionActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
-    private val TAG = "MissionOverviewActivity"
+    private val TAG = "OverviewMissionActivity"
     private lateinit var dataset : List<Mission>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,27 +43,18 @@ class MissionOverviewActivity : AppCompatActivity() {
         loadMissions()
 
         // Floating action bar with create should only be shown to editors
-        val user = FirebaseAuth.getInstance().currentUser
-        fab.hide()
-        user?.getIdToken(true)?.addOnSuccessListener { result ->
-            val isEditor = result?.claims?.get("editor")
-            if (isEditor == true){
-                fab.show()
+        if (SharedPrefUtil.isEditor(this)) {
+            fab.show()
+            // Create a new mission
+            fab.setOnClickListener {
+                intent = Intent(this, MissionActivity::class.java).apply {
+                    putExtra("create_mission", true)
+                }
+                startActivity(intent)
             }
         }
-        // Create a new mission
-        fab.setOnClickListener {
-            intent = Intent(this, MissionActivity::class.java).apply {
-                putExtra("create_mission", true)
-            }
-            startActivity(intent)
-        }
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-
-
-
-
     }
 
     private fun missionItemClicked(missionInstance: Mission){
@@ -78,35 +70,27 @@ class MissionOverviewActivity : AppCompatActivity() {
         // TODO -- move to own class
         // asynchronous operation
           // direct user based on sign in status
-          val user = FirebaseAuth.getInstance().currentUser
+          val teamDocId = SharedPrefUtil.getTeamDocId(this)
+          var db = FirebaseFirestore.getInstance()
+          // Get missions within a certain timeframe
+          val collectionPath = "/teams/${teamDocId}/missions"
+          val query = db
+              .collection(collectionPath)
+              .orderBy("time", Query.Direction.DESCENDING)
+              .limit(5)
+              .get()
 
-          user?.getIdToken(true)?.addOnSuccessListener { result ->
-              val teamDocId = result?.claims?.get("teamDocID")
-              var db = FirebaseFirestore.getInstance()
-              // Get missions within a certain timeframe
-              val collectionPath = "/teams/${teamDocId}/missions"
-              val query = db
-                  .collection(collectionPath)
-                  .orderBy("time", Query.Direction.DESCENDING)
-                  .limit(5)
-                  .get()
-
-              query.addOnSuccessListener {snapshots->
-                  val missionList = snapshots.toObjects<Mission>()
-                  // I need to pass doc id to mission. probably a better way to do this
-                  for (i in 0 until snapshots.size())
-                    {
-                        var docId = snapshots.documents[i].id
-                        missionList[i].docId = docId
-                    }
-                  recyclerView.adapter = MissionAdapter(missionList,{ missionInstance : Mission -> missionItemClicked(missionInstance) })
+          query.addOnSuccessListener {snapshots->
+              val missionList = snapshots.toObjects<Mission>()
+              // I need to pass doc id to mission. probably a better way to do this
+              for (i in 0 until snapshots.size())
+              {
+                  var docId = snapshots.documents[i].id
+                  missionList[i].docId = docId
               }
+              recyclerView.adapter = MissionAdapter(missionList,{ missionInstance : Mission -> missionItemClicked(missionInstance) })
           }
-
       }
-
-
-
-
-
 }
+
+

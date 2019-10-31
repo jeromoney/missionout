@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MissionOverviewActivity"
+            android:name=".OverviewMissionActivity"
             android:label="@string/title_activity_mission_overview"
             android:parentActivityName=".ui.main.GoogleSignInActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -36,10 +36,10 @@
         -->
         <activity
             android:name=".MissionActivity"
-            android:parentActivityName=".MissionOverviewActivity">
+            android:parentActivityName=".OverviewMissionActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.beaterboofs.missionout.MissionOverviewActivity" />
+                android:value="com.beaterboofs.missionout.OverviewMissionActivity" />
         </activity>
 
         <service

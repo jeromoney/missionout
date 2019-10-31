@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".MissionOverviewActivity"
+    tools:context=".OverviewMissionActivity"
     tools:showIn="@layout/activity_mission_overview">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/mission_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        android:id="@+id/mission_recycler_view"/>
+        android:scrollbars="vertical" />
 </androidx.core.widget.NestedScrollView>

@@ -11,13 +11,13 @@ class MissionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.mission_activity)
-
         val create_mission = intent.getBooleanExtra("create_mission", false)
         var fragment : Fragment
         if (create_mission){
             fragment = CreateMissionFragment.newInstance()
         }
         else {
+            //val mission = intent.getParcelableExtra<Mission>("mission_object")
             fragment = DisplayMissionFragment.newInstance(Mission()) // TODO - replace this with actual mission
         }
 
