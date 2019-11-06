@@ -17,8 +17,8 @@ class MissionActivity : AppCompatActivity() {
             fragment = CreateMissionFragment.newInstance()
         }
         else {
-            //val mission = intent.getParcelableExtra<Mission>("mission_object")
-            fragment = DisplayMissionFragment.newInstance(Mission()) // TODO - replace this with actual mission
+            val docId = intent?.getStringExtra("docId")
+            fragment = DisplayMissionFragment.newInstance(docId!!)
         }
 
         if (savedInstanceState == null) {

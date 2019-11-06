@@ -1,14 +1,9 @@
-package com.beaterboofs.missionout.ui.main
+package com.beaterboofs.missionout
 
-import android.annotation.TargetApi
-import android.content.Context
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
-import com.beaterboofs.missionout.R
 
 import android.content.Intent
-import android.content.SharedPreferences
-import android.os.Build
 
 import android.util.Log
 import android.view.View
@@ -16,7 +11,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
-import com.beaterboofs.missionout.OverviewMissionActivity
+import com.beaterboofs.missionout.SharedPrefUtil.updateSharedPreferences
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -35,9 +30,7 @@ import kotlinx.android.synthetic.main.activity_google.signOutAndDisconnect
 import kotlinx.android.synthetic.main.activity_google.signOutButton
 import kotlinx.android.synthetic.main.activity_google.status
 import kotlinx.android.synthetic.main.activity_google_sign_in.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 
@@ -136,7 +129,7 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
                     Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
                     updateUI(user)
-                    updateSharedPreferences(user)
+                    updateSharedPreferences(this, user)
                     // delete instance id to make sure it aligns with user accounts
                     GlobalScope.launch {FirebaseInstanceId.getInstance().deleteInstanceId() } // TODO - remove globals scope
 
@@ -152,29 +145,14 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
                 // [END_EXCLUDE]
             }
     }
-
-    // Places editor status and path to team document in Shared Preferences for easier access.
-    // Will this cause problem with stale information?
-    private fun updateSharedPreferences(firebaseUser: FirebaseUser?) {
-        var i = 1
-        firebaseUser?.getIdToken(true)?.addOnSuccessListener { result -> // TODO - convert to coroutine
-            val isEditor = result?.claims?.getOrDefault("editor", false)
-            val teamDocId = result?.claims?.getOrDefault("teamDocID", null)
-            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-            with (sharedPreferences.edit()) {
-                putBoolean("editor", (isEditor as Boolean?)!!)
-                putString("teamDocID", teamDocId as String?)
-                commit()
-            }
-        }
-
-    }
     // [END auth_with_google]
 
     // [START signin]
     private fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+        startActivityForResult(signInIntent,
+            RC_SIGN_IN
+        )
     }
     // [END signin]
 

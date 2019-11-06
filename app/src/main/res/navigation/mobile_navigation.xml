@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/mainActivity">
+
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.beaterboofs.missionout.MainActivity"
+        android:label="main_activity"
+        tools:layout="@layout/main_activity" />
+    <fragment
+        android:id="@+id/displayMissionFragment"
+        android:name="com.beaterboofs.missionout.ui.mission.DisplayMissionFragment"
+        android:label="DisplayMissionFragment" />
+    <fragment
+        android:id="@+id/createMissionFragment"
+        android:name="com.beaterboofs.missionout.CreateMissionFragment"
+        android:label="CreateMissionFragment" />
+    <activity
+        android:id="@+id/overviewMissionActivity"
+        android:name="com.beaterboofs.missionout.OverviewMissionActivity"
+        android:label="activity_mission_overview"
+        tools:layout="@layout/activity_mission_overview" />
+</navigation>

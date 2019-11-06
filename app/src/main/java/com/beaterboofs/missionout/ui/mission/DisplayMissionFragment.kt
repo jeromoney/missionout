@@ -10,28 +10,25 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import com.beaterboofs.FirestoreRepository
+import com.beaterboofs.missionout.FirestoreRemoteDataSource
 import com.beaterboofs.missionout.*
 import com.beaterboofs.missionout.databinding.FragmentMissionDisplayBinding
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.fragment_create_mission.*
 
 import kotlinx.android.synthetic.main.fragment_mission_display.*
 
 
-class DisplayMissionFragment : Fragment() {
+class DisplayMissionFragment(docIdVal: String) : Fragment() {
+    private val docIdFrag = docIdVal
+    private val TAG = "DisplayMissionFragment"
+    private lateinit var viewModel: DisplayMissionViewModel
     companion object {
         @JvmStatic
-        fun newInstance(missionVal: Mission) =
-            DisplayMissionFragment().apply {
-                mission = missionVal
-            }
+        fun newInstance(docIdVal: String) =
+            DisplayMissionFragment(docIdVal)
     }
 
-    private val TAG = "DisplayMissionFragment"
-    private var mission: Mission? = null
-    private lateinit var viewModel: DisplayMissionViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,9 +44,8 @@ class DisplayMissionFragment : Fragment() {
         binding.lifecycleOwner = this
         viewModel = ViewModelProviders.of(this).get(DisplayMissionViewModel::class.java)
         viewModel.apply {
-            cachedMission = mission!!
+            docId = docIdFrag
             teamDocId = SharedPrefUtil.getTeamDocId(context!!.applicationContext)!!
-            docId = (context as MissionActivity).intent.getStringExtra("mission_id")
             getMission().observe(this@DisplayMissionFragment, Observer {
                 // update UI
                 binding.setVariable(BR.missionInstance, viewModel.getMission().value)
@@ -66,13 +62,13 @@ class DisplayMissionFragment : Fragment() {
             val mission = binding.missionInstance
 
             // TODO - Add a confirmation screen to prevent butt dials
-            var db = FirebaseFirestore.getInstance()
+            val db = FirebaseFirestore.getInstance()
             val teamDocId = SharedPrefUtil.getTeamDocId(this.requireContext())
             val alarm = Alarm(
                 description = mission?.description,
                 action = mission?.needForAction,
                 teamDocId = teamDocId!!,
-                missionDocID = null
+                missionDocID = docIdFrag
             )
             db.collection("alarms").add(alarm)
                 .addOnSuccessListener {
@@ -90,7 +86,7 @@ class DisplayMissionFragment : Fragment() {
 
        // set up dropdown box
         val respondingList = resources.getStringArray(R.array.responding_dropdown_menu)
-        var adapter = ArrayAdapter<String>(activity,R.layout.dropdown_menu_popup_item,respondingList)
+        val adapter = ArrayAdapter<String>(context!!,R.layout.dropdown_menu_popup_item,respondingList)
 
         binding.respondingDropdownItems.apply {
             setAdapter(adapter) // todo - remove binding
@@ -102,7 +98,7 @@ class DisplayMissionFragment : Fragment() {
                     id: Long
                 ) {
                     val response = (view as MaterialTextView).text as String
-                    FirestoreRepository.sendResponse(response, viewModel.docId!!)
+                    FirestoreRemoteDataSource.sendResponse(context, response, viewModel.docId!!)
                 }
             }
         }

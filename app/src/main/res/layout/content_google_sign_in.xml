@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.main.GoogleSignInActivity"
+    tools:context=".GoogleSignInActivity"
     tools:showIn="@layout/activity_google_sign_in">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

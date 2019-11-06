@@ -2,16 +2,26 @@ package com.beaterboofs.missionout
 
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.Fragment
 import com.beaterboofs.missionout.ui.mission.DisplayMissionFragment
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.GeoPoint
 import kotlinx.android.synthetic.main.fragment_create_mission.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import android.app.Activity
+import androidx.core.view.children
+import com.beaterboofs.missionout.FirestoreRemoteDataSource.addMissionToDB
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputLayout
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,32 +37,23 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class CreateMissionFragment : Fragment() {
+    private val TAG = "CreateMissionFragment"
 
-    fun validNumber(editable: Editable, low: Double, high: Double): Boolean{
-        val number = editable.toString().toDouble()
-        return (number in low..high)
-    }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         // Set data validation for lat/lon
-        lat_edit_text_val.doAfterTextChanged {
-            if (it.isNullOrBlank() || it.toString() == "-"){
-                return@doAfterTextChanged
-            }
-            val number = it.toString().toDouble()
-            if (!(number in -90.0..90.0)){
-                lat_edit_text_val.error = "Latitude is between -90 and 90"
+        lat_edit_text_val.apply {
+            doAfterTextChanged {
+                validateLatLon(this, LATITUDE)
             }
         }
 
-        lon_edit_text_val.doAfterTextChanged {
-            if (it.isNullOrBlank() || it.toString() == "-"){
-                return@doAfterTextChanged
-            }
-            val number = it.toString().toDouble()
-            if (!(number in -180.0..180.0)){
-                lon_edit_text_val.error = "Longitude is between -180 and 180"
+        lon_edit_text_val.apply {
+            doAfterTextChanged {
+                validateLatLon(this, LONGITUDE)
             }
         }
 
@@ -61,25 +62,58 @@ class CreateMissionFragment : Fragment() {
             if (isTextInError()){
                 return@setOnClickListener
             }
+            // Start spinner
+            createProgressBar.visibility = View.VISIBLE
+            hideKeyboard()
+            // Hide text
+            for (child in create_mission_layout.children){
+                if (child is TextInputLayout || child is FloatingActionButton){
+                    child.visibility = View.GONE
+                }
+            }
 
             val missionInstance = getMissionFromText()
-            // submit mission to firestore database
-            var db = FirebaseFirestore.getInstance()
-            val teamDocId = SharedPrefUtil.getTeamDocId(this.requireContext())
-            val fragment = DisplayMissionFragment.newInstance(missionInstance)
-
-            db.collection("/teams/${teamDocId}/missions").add(missionInstance)
-                .addOnSuccessListener { docRef ->
-                    // Document sucessfuly pushed to firestore so now we send docId to next fragment
-                    val docId = docRef.id
-                    // TODO - pass this docId to the viewmodel
+            CoroutineScope(Dispatchers.Main).launch {
+                val docID = addMissionToDB(context!!, missionInstance)
+                //Stop spinner
+                if (docID != null) {
+                    launchDisplayFragment(docID)
                 }
-            //TODO - what to do if fails
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.mission_detail, fragment)
-                .commitNow()
+                else {
+                    // error occured so display snackbar
+                    createProgressBar.visibility = View.GONE
+                    Snackbar.make(it,getString(R.string.error_uploading),Snackbar.LENGTH_LONG)
+                        .also {
+                        it.show()
+                    }
+                    // Show text
+                    for (child in create_mission_layout.children){
+                        if (child is TextInputLayout || child is FloatingActionButton){
+                            child.visibility = View.VISIBLE
+                        }
+                    }
+
+                }
+            }
+
+
         }
     }
+
+    private fun hideKeyboard() {
+        val imm = context!!.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
+    }
+
+    private fun launchDisplayFragment(docID: String) {
+        // This segment depends on completion of coroutine
+        val fragment = DisplayMissionFragment.newInstance(docID)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.mission_detail, fragment)
+            .commitNow()
+    }
+
+
 
     private fun getMissionFromText(): Mission {
         val description = mission_description_edit_text_val.text.toString()
@@ -135,8 +169,8 @@ class CreateMissionFragment : Fragment() {
             }
         }
 
-        if (!(lat_edit_text_val.text.toString().toDouble() in -90.0..90.0) ||
-                    !(lon_edit_text_val.text.toString().toDouble() in -180.0..180.0)){
+        if (!(lat_edit_text_val.text.toString().toDouble() in -LATITUDE.range..LATITUDE.range) ||
+                    !(lon_edit_text_val.text.toString().toDouble() in -LONGITUDE.range..LONGITUDE.range)){
             return true
         }
         return false
@@ -181,7 +215,23 @@ class CreateMissionFragment : Fragment() {
         // TODO: Update argument type and name
         fun onFragmentInteraction(uri: Uri)
     }
-
+    /***
+     * Validates Lat and Lon entries while typing. Checks if number is outside of range.
+     * Returns null if everything is good, or an error message.
+     */
+    private fun validateLatLon(latLon: TextInputEditText, latLonConst : LatLon){
+        val number = latLon.text.toString()
+        val range = latLonConst.range
+        if (number.isBlank() || number == "-"){
+            // User probably just started to type the number. Not that this still needs to be checked
+            return
+        }
+        if (number.toDouble() in -1 * range..range){
+            // number is in range so everything is good
+            return
+        }
+        latLon.error = "${latLonConst.type} is between -${range.toInt()} and ${range.toInt()}"
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of

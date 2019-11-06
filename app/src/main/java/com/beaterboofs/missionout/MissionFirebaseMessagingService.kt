@@ -5,13 +5,21 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.beaterboofs.missionout.FirestoreRemoteDataSource.sendTokenToServer
+import com.beaterboofs.missionout.SharedPrefUtil.getToken
+import com.beaterboofs.missionout.SharedPrefUtil.setToken
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import java.lang.Exception
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.util.*
 
 class MissionFirebaseMessagingService : FirebaseMessagingService() {
     private val CHANNEL_ID = "1234"
@@ -38,22 +46,47 @@ class MissionFirebaseMessagingService : FirebaseMessagingService() {
         // Uh Oh -- FCM received so there must be a mission.
         // Display a notification, play sound and allow user to dismiss sound
         createNotificationChannel()
-        val someHeader = p0.data["description"]
-        val someBody = p0.data["action"]
+        val header = p0.data["description"]
+        val body = p0.data["action"]
+        val docId = p0.data["docId"]
         val notificationId = 12344
         // Create an explicit intent for an Activity in your app
         val intent = Intent(this, MissionActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+        intent.putExtra("docId", docId)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(
+            this,
+            UUID.randomUUID().hashCode() ,
+            intent,
+            0)
+        val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        // play sound
+        val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+        val channel : NotificationChannel
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            channel = NotificationChannel(CHANNEL_ID, "some name", NotificationManager.IMPORTANCE_HIGH).apply {
+                lightColor = Color.GRAY
+                enableLights(true)
+                description = "SOME DESCRIPTION"
+            }
+            val audioAttributes = AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_UNKNOWN)
+                .setUsage(AudioAttributes.USAGE_ALARM)
+                .build()
+            channel.setSound(defaultSoundUri, audioAttributes)
+            notificationManager.createNotificationChannel(channel)
+        }
 
-
-        var builder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.fui_ic_mail_white_24dp)
-            .setContentTitle(someHeader)
-            .setContentText(someBody)
+        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.drawable.baseline_warning_24)
+            .setContentTitle(header)
+            .setContentText(body)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
+            .setDeleteIntent(pendingIntent)
+            .setSound(defaultSoundUri)
+
 
         // show notifcation
         with(NotificationManagerCompat.from(this)) {
@@ -61,31 +94,17 @@ class MissionFirebaseMessagingService : FirebaseMessagingService() {
             notify(notificationId, builder.build())
         }
 
-        // play sound
-        var defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        var r = RingtoneManager.getRingtone(applicationContext, defaultSoundUri)
-        r.play()
 
-    }
 
-    override fun onMessageSent(p0: String) {
-        super.onMessageSent(p0)
-    }
-
-    override fun onDeletedMessages() {
-        super.onDeletedMessages()
-    }
-
-    override fun onSendError(p0: String, p1: Exception) {
-        super.onSendError(p0, p1)
     }
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        sendTokenToServer(token)
-    }
-
-    private fun sendTokenToServer(token: String) {
-
+        val oldToken = getToken(applicationContext)
+        setToken(applicationContext, token)
+        val userUID = FirebaseAuth.getInstance().uid!!
+        GlobalScope.launch {
+            sendTokenToServer(userUID, token, oldToken)
+        }
     }
 }

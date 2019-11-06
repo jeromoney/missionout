@@ -9,7 +9,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObjects
+import com.google.firebase.ktx.Firebase
 
 import kotlinx.android.synthetic.main.activity_mission_overview.*
 
@@ -60,7 +62,7 @@ class OverviewMissionActivity : AppCompatActivity() {
     private fun missionItemClicked(missionInstance: Mission){
         // Launch Mission Activity Detail with clicked item
         intent = Intent(this, MissionActivity::class.java).apply {
-            putExtra("mission_id", missionInstance.docId)
+            putExtra("docId", missionInstance.docId)
         }
         startActivity(intent)
     }
@@ -71,7 +73,7 @@ class OverviewMissionActivity : AppCompatActivity() {
         // asynchronous operation
           // direct user based on sign in status
           val teamDocId = SharedPrefUtil.getTeamDocId(this)
-          var db = FirebaseFirestore.getInstance()
+          val db = Firebase.firestore
           // Get missions within a certain timeframe
           val collectionPath = "/teams/${teamDocId}/missions"
           val query = db
