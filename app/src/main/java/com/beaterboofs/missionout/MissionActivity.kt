@@ -3,7 +3,7 @@ package com.beaterboofs.missionout
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.beaterboofs.missionout.ui.mission.DisplayMissionFragment
+import com.beaterboofs.missionout.ui.mission.DisplayFragment
 import kotlinx.android.synthetic.main.mission_activity.*
 
 class MissionActivity : AppCompatActivity() {
@@ -18,7 +18,7 @@ class MissionActivity : AppCompatActivity() {
         }
         else {
             val docId = intent?.getStringExtra("docId")
-            fragment = DisplayMissionFragment.newInstance(docId!!)
+            fragment = DisplayFragment.newInstance(docId!!)
         }
 
         if (savedInstanceState == null) {

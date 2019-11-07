@@ -2,25 +2,46 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mobile_navigation"
-    app:startDestination="@id/mainActivity">
+    android:id="@+id/mobile_navigation">
 
-    <activity
-        android:id="@+id/mainActivity"
-        android:name="com.beaterboofs.missionout.MainActivity"
-        android:label="main_activity"
-        tools:layout="@layout/main_activity" />
     <fragment
         android:id="@+id/displayMissionFragment"
-        android:name="com.beaterboofs.missionout.ui.mission.DisplayMissionFragment"
-        android:label="DisplayMissionFragment" />
+        android:name="com.beaterboofs.missionout.ui.mission.DisplayFragment"
+        android:label="DisplayMissionFragment" >
+        <action
+            android:id="@+id/action_displayMissionFragment_to_overviewFragment"
+            app:destination="@id/overviewFragment" />
+    </fragment>
     <fragment
         android:id="@+id/createMissionFragment"
         android:name="com.beaterboofs.missionout.CreateMissionFragment"
-        android:label="CreateMissionFragment" />
-    <activity
-        android:id="@+id/overviewMissionActivity"
-        android:name="com.beaterboofs.missionout.OverviewMissionActivity"
-        android:label="activity_mission_overview"
-        tools:layout="@layout/activity_mission_overview" />
+        android:label="CreateMissionFragment" >
+        <action
+            android:id="@+id/action_createMissionFragment_to_displayMissionFragment"
+            app:destination="@id/displayMissionFragment" />
+        <argument
+            android:name="documentID"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/overviewFragment"
+        android:name="com.beaterboofs.missionout.OverviewFragment"
+        android:label="fragment_overview"
+        tools:layout="@layout/fragment_overview" >
+        <action
+            android:id="@+id/action_overviewFragment_to_createMissionFragment"
+            app:destination="@id/createMissionFragment" />
+        <action
+            android:id="@+id/action_overviewFragment_to_displayMissionFragment"
+            app:destination="@id/displayMissionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.beaterboofs.missionout.SignInFragment"
+        android:label="fragment_sign_in"
+        tools:layout="@layout/fragment_sign_in" >
+        <action
+            android:id="@+id/action_signInFragment_to_overviewFragment"
+            app:destination="@id/overviewFragment" />
+    </fragment>
 </navigation>

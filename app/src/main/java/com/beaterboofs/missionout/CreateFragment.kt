@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
-import com.beaterboofs.missionout.ui.mission.DisplayMissionFragment
+import com.beaterboofs.missionout.ui.mission.DisplayFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.GeoPoint
@@ -107,7 +107,7 @@ class CreateMissionFragment : Fragment() {
 
     private fun launchDisplayFragment(docID: String) {
         // This segment depends on completion of coroutine
-        val fragment = DisplayMissionFragment.newInstance(docID)
+        val fragment = DisplayFragment.newInstance(docID)
         parentFragmentManager.beginTransaction()
             .replace(R.id.mission_detail, fragment)
             .commitNow()
