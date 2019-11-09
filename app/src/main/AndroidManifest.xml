@@ -20,11 +20,7 @@
         <activity
             android:name=".OverviewMissionActivity"
             android:label="@string/title_activity_mission_overview"
-            android:parentActivityName=".GoogleSignInActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.beaterboofs.missionout.GoogleSignInActivity" />
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -49,11 +45,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
-        <activity
-            android:name=".GoogleSignInActivity"
-            android:label="@string/title_activity_google_sign_in"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
