@@ -82,7 +82,7 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/missionOverviewButton"
+            android:id="@+id/overviewButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/signOutAndDisconnect"

@@ -3,10 +3,25 @@ package com.beaterboofs.missionout
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.iid.FirebaseInstanceId
+import kotlinx.android.synthetic.main.fragment_sign_in.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,11 +36,52 @@ private const val ARG_PARAM2 = "param2"
  * Use the [SignInFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class SignInFragment : Fragment() {
+class SignInFragment : Fragment(), View.OnClickListener {
+    private lateinit var auth: FirebaseAuth
+    private lateinit var googleSignInClient: GoogleSignInClient
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private var listener: OnFragmentInteractionListener? = null
+
+    companion object {
+        private const val TAG = "SignInFragment"
+        private const val RC_SIGN_IN = 9001
+        @JvmStatic
+        fun newInstance() =
+            SignInFragment()
+    }
+
+    override fun onClick(v: View?) {
+        val i = v?.id
+        when (i) {
+            R.id.signInButton -> signIn()
+            R.id.signOutButton -> signOut()
+            R.id.disconnectButton -> revokeAccess()
+            R.id.overviewButton -> missionOverview() //TODO - REMOVE IN PRODUCTION
+            R.id.getTokenButton -> getToken() //TODO - REMOVE IN PRODUCTION
+        }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        // [START config_signin]
+        // Configure Google Sign In
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        // [END config_signin]
+
+        googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+
+        // [START initialize_auth]
+        // Initialize Firebase Auth
+        auth = FirebaseAuth.getInstance()
+
+        // [END initialize_auth]
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,14 +89,18 @@ class SignInFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val view: View = inflater.inflate(R.layout.fragment_sign_in, container, false)
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sign_in, container, false)
+        return view
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -57,6 +117,15 @@ class SignInFragment : Fragment() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        signInButton.setOnClickListener(this)
+        signOutButton.setOnClickListener(this)
+        disconnectButton.setOnClickListener(this)
+        overviewButton.setOnClickListener(this)
+        getTokenButton.setOnClickListener(this)
+
+    }
     override fun onDetach() {
         super.onDetach()
         listener = null
@@ -78,23 +147,112 @@ class SignInFragment : Fragment() {
         fun onFragmentInteraction(uri: Uri)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SignInFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SignInFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+
+
+    // [START auth_with_google]
+    private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.id!!)
+        // [START_EXCLUDE silent]
+        //showProgressDialog()
+        // [END_EXCLUDE]
+
+        val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(requireActivity()) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "signInWithCredential:success")
+                    val user = auth.currentUser
+                    updateUI(user)
+                    SharedPrefUtil.updateSharedPreferences(requireActivity(), user)
+                    // delete instance id to make sure it aligns with user accounts
+                    GlobalScope.launch {
+                        FirebaseInstanceId.getInstance().deleteInstanceId()
+                    } // TODO - remove globals scope
+
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInWithCredential:failure", task.exception)
+                    Snackbar.make(main_layout, "Authentication Failed.", Snackbar.LENGTH_SHORT)
+                        .show()
+                    updateUI(null)
                 }
+
+                // [START_EXCLUDE]
+                //hideProgressDialog()
+                // [END_EXCLUDE]
             }
+    }
+    // [END auth_with_google]
+
+    // [START signin]
+    private fun signIn() {
+        val signInIntent = googleSignInClient.signInIntent
+        startActivityForResult(
+            signInIntent,
+            RC_SIGN_IN
+        )
+    }
+    // [END signin]
+
+    private fun signOut() {
+        // Firebase sign out
+        auth.signOut()
+
+        // Google sign out
+        googleSignInClient.signOut().addOnCompleteListener(requireActivity()) {
+            updateUI(null)
+        }
+    }
+
+    private fun revokeAccess() {
+        // Firebase sign out
+        auth.signOut()
+
+        // Google revoke access
+        googleSignInClient.revokeAccess().addOnCompleteListener(requireActivity()) {
+            updateUI(null)
+        }
+    }
+
+    private fun updateUI(user: FirebaseUser?) {
+        //hideProgressDialog()
+        if (user != null) {
+            status.text = getString(R.string.google_status_fmt, user.email)
+            detail.text = getString(R.string.firebase_status_fmt, user.uid)
+
+            signInButton.visibility = View.GONE
+            signOutAndDisconnect.visibility = View.VISIBLE
+        } else {
+            status.setText(R.string.signed_out)
+            detail.text = null
+
+            signInButton.visibility = View.VISIBLE
+            signOutAndDisconnect.visibility = View.GONE
+        }
+    }
+
+    //TODO - REMOVE IN PRODUCTION VERSION
+    fun missionOverview() {
+        // TODO - navigate to overviewfragment
+    }
+
+    //TODO - REMOVE IN PRODUCTION VERSION
+    fun getToken() {
+        FirebaseInstanceId.getInstance().instanceId
+            .addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w(TAG, "getInstanceId failed", task.exception)
+                    return@OnCompleteListener
+                }
+
+                // Get new Instance ID token
+                val token = task.result?.token
+
+                // Log and toast
+                val msg = token.toString()
+                Log.d(TAG, msg)
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+            })
     }
 }

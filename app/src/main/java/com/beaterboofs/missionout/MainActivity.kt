@@ -3,12 +3,17 @@ package com.beaterboofs.missionout
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.main_activity.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SignInFragment.OnFragmentInteractionListener {
+    override fun onFragmentInteraction(uri: Uri) {
+        //TODO -- enable interaction listener
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,24 +39,12 @@ class MainActivity : AppCompatActivity() {
 
 
         // direct user based on sign in status
-        val user = FirebaseAuth.getInstance().currentUser
+        // val fragment = SignInFragment.newInstance()
+        val fragment = SignInFragment.newInstance()
+        supportFragmentManager.beginTransaction()
+            .replace(mission_detail.id, fragment)
+            .commitNow()
 
-
-
-        val intent: Intent
-        //if (user == null) {
-            // if user has not signed in, direct them to the sign in page
-            intent = Intent(this, GoogleSignInActivity::class.java).apply {
-                putExtra("user", "nothing")
-            }
-
-//        else {
-//            // user has already signed in,
-//            intent = Intent(this, MissionActivity::class.java).apply {
-//                putExtra("user", "nothing")
-//            }
-//        }
-        startActivity(intent)
     }
 
 }

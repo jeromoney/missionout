@@ -79,7 +79,7 @@ class MissionFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.baseline_warning_24)
+            .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
             .setContentTitle(header)
             .setContentText(body)
             .setPriority(NotificationCompat.PRIORITY_HIGH)

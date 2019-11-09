@@ -10,7 +10,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.PreferenceManager
 import com.beaterboofs.missionout.SharedPrefUtil.updateSharedPreferences
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -39,12 +38,8 @@ import kotlinx.coroutines.launch
  */
 class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
 
-    // [START declare_auth]
     private lateinit var auth: FirebaseAuth
-    // [END declare_auth]
-
     private lateinit var googleSignInClient: GoogleSignInClient
-
     private lateinit var missionOverviewButton: Button
 
 
@@ -58,7 +53,7 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
         disconnectButton.setOnClickListener(this)
 
         // TODO - REMOVE THIS IN PRODUCTION
-        missionOverviewButton = findViewById<Button>(R.id.missionOverviewButton)
+        missionOverviewButton = findViewById<Button>(R.id.overviewButton)
         missionOverviewButton.setOnClickListener(this)
         getTokenButton.setOnClickListener(this)
 
@@ -206,7 +201,7 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
             R.id.signInButton -> signIn()
             R.id.signOutButton -> signOut()
             R.id.disconnectButton -> revokeAccess()
-            R.id.missionOverviewButton -> missionOverview() //TODO - REMOVE IN PRODUCTION
+            R.id.overviewButton -> missionOverview() //TODO - REMOVE IN PRODUCTION
             R.id.getTokenButton -> getToken() //TODO - REMOVE IN PRODUCTION
         }
     }
