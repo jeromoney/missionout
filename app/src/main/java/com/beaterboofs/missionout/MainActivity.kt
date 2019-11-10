@@ -6,18 +6,26 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.navigation.fragment.NavHostFragment
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.main_activity.*
 
 
-class MainActivity : AppCompatActivity(), SignInFragment.OnFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), SignInFragment.OnFragmentInteractionListener, OverviewFragment.OnFragmentInteractionListener {
     override fun onFragmentInteraction(uri: Uri) {
         //TODO -- enable interaction listener
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main_activity)
+        setContentView(R.layout.navigation_activity)
+
+        val host: NavHostFragment = supportFragmentManager
+            .findFragmentById(R.id.overviewFragment) as NavHostFragment? ?: return
+
+        val navController = host.navController
+
+
 
         // get list of accounts
         val am: AccountManager = AccountManager.get(this)
@@ -40,10 +48,6 @@ class MainActivity : AppCompatActivity(), SignInFragment.OnFragmentInteractionLi
 
         // direct user based on sign in status
         // val fragment = SignInFragment.newInstance()
-        val fragment = SignInFragment.newInstance()
-        supportFragmentManager.beginTransaction()
-            .replace(mission_detail.id, fragment)
-            .commitNow()
 
     }
 
