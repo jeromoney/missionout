@@ -5,15 +5,12 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.overview_fragment.*
 
-import kotlinx.android.synthetic.main.activity_mission_overview.*
 
 /**
  * Retrieves all the last missions within a time period. Displays as a scrolled list.
@@ -29,8 +26,7 @@ class OverviewMissionActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_mission_overview)
-        setSupportActionBar(toolbar)
+        setContentView(R.layout.overview_fragment)
 
         dataset = listOf()
         viewManager = LinearLayoutManager(this)

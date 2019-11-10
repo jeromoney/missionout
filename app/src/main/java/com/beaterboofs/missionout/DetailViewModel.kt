@@ -15,13 +15,13 @@ import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 
-class DisplayMissionViewModel() : ViewModel() {
+class DetailViewModel() : ViewModel() {
 
     lateinit var docId: String
     lateinit var teamDocId: String
 
     companion object {
-        val TAG = "DisplayMissionViewModel"
+        val TAG = "DetailViewModel"
     }
 
     private val missionInstance: LiveData<Mission> = liveData(Dispatchers.IO) {

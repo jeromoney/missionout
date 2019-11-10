@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/displayMissionFragment"
-        android:name="com.beaterboofs.missionout.ui.mission.DisplayMissionFragment"
+        android:name="com.beaterboofs.missionout.ui.mission.DetailFragment"
         android:label="DisplayMissionFragment" >
         <action
             android:id="@+id/action_displayMissionFragment_to_overviewFragment"

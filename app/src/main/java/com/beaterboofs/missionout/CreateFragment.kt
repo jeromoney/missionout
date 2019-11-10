@@ -11,14 +11,14 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.GeoPoint
-import kotlinx.android.synthetic.main.fragment_create_mission.*
+import kotlinx.android.synthetic.main.fragment_create.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import android.app.Activity
 import androidx.core.view.children
 import com.beaterboofs.missionout.FirestoreRemoteDataSource.addMissionToDB
-import com.beaterboofs.missionout.ui.mission.DisplayMissionFragment
+import com.beaterboofs.missionout.ui.mission.DetailFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 
@@ -107,7 +107,7 @@ class CreateMissionFragment : Fragment() {
 
     private fun launchDisplayFragment(docID: String) {
         // This segment depends on completion of coroutine
-        val fragment = DisplayMissionFragment.newInstance(docID)
+        val fragment = DetailFragment.newInstance(docID)
         parentFragmentManager.beginTransaction()
             .replace(R.id.mission_detail, fragment)
             .commitNow()
@@ -186,7 +186,7 @@ class CreateMissionFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_mission, container, false)
+        return inflater.inflate(R.layout.fragment_create, container, false)
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -2,13 +2,10 @@ package com.beaterboofs.missionout
 
 import android.accounts.Account
 import android.accounts.AccountManager
-import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.fragment.NavHostFragment
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.main_activity.*
 
 
 class MainActivity : AppCompatActivity(), SignInFragment.OnFragmentInteractionListener, OverviewFragment.OnFragmentInteractionListener {

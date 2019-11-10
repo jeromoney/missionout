@@ -12,21 +12,21 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.beaterboofs.missionout.FirestoreRemoteDataSource
 import com.beaterboofs.missionout.*
-import com.beaterboofs.missionout.databinding.FragmentMissionDisplayBinding
+import com.beaterboofs.missionout.databinding.FragmentDetailBinding
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.firestore.FirebaseFirestore
 
-import kotlinx.android.synthetic.main.fragment_mission_display.*
+import kotlinx.android.synthetic.main.fragment_detail.*
 
 
-class DisplayMissionFragment(docIdVal: String) : Fragment() {
+class DetailFragment(docIdVal: String) : Fragment() {
     private val docIdFrag = docIdVal
-    private val TAG = "DisplayMissionFragment"
-    private lateinit var viewModel: DisplayMissionViewModel
+    private val TAG = "DetailFragment"
+    private lateinit var viewModel: DetailViewModel
     companion object {
         @JvmStatic
         fun newInstance(docIdVal: String) =
-            DisplayMissionFragment(docIdVal)
+            DetailFragment(docIdVal)
     }
 
 
@@ -34,19 +34,19 @@ class DisplayMissionFragment(docIdVal: String) : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_mission_display, container, false)
+        return inflater.inflate(R.layout.fragment_detail, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val binding: FragmentMissionDisplayBinding =
-            DataBindingUtil.setContentView(this.requireActivity(), R.layout.fragment_mission_display)
+        val binding: FragmentDetailBinding =
+            DataBindingUtil.setContentView(this.requireActivity(), R.layout.fragment_detail)
         binding.lifecycleOwner = this
-        viewModel = ViewModelProviders.of(this).get(DisplayMissionViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(DetailViewModel::class.java)
         viewModel.apply {
             docId = docIdFrag
             teamDocId = SharedPrefUtil.getTeamDocId(context!!.applicationContext)!!
-            getMission().observe(this@DisplayMissionFragment, Observer {
+            getMission().observe(this@DetailFragment, Observer {
                 // update UI
                 binding.setVariable(BR.missionInstance, viewModel.getMission().value)
             })
@@ -65,7 +65,7 @@ class DisplayMissionFragment(docIdVal: String) : Fragment() {
             val db = FirebaseFirestore.getInstance()
             val teamDocId = SharedPrefUtil.getTeamDocId(this.requireContext())
             val alarm = Alarm(
-                description = mission?.description,
+                description = mission!!.description,
                 action = mission?.needForAction,
                 teamDocId = teamDocId!!,
                 missionDocID = docIdFrag
@@ -98,7 +98,7 @@ class DisplayMissionFragment(docIdVal: String) : Fragment() {
                     id: Long
                 ) {
                     val response = (view as MaterialTextView).text as String
-                    FirestoreRemoteDataSource.sendResponse(context, response, viewModel.docId!!)
+                    FirestoreRemoteDataSource.sendResponse(context, response, viewModel.docId)
                 }
             }
         }

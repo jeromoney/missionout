@@ -209,4 +209,5 @@
     <string name="alarm_channel_description">MissionOut alarms are sent on this channel</string>
     <string name="latlonerror">Leave both lat and lon blank if unknown</string>
     <string name="error_uploading">An error occurred uploading the mission</string>
+    <string name="failed_google_signin">Google sign in failed</string>
 </resources>
