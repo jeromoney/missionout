@@ -10,8 +10,11 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import com.beaterboofs.missionout.BR
 import com.beaterboofs.missionout.FirestoreRemoteDataSource
-import com.beaterboofs.missionout.*
+import com.beaterboofs.missionout.DataClass.Alarm
+import com.beaterboofs.missionout.R
+import com.beaterboofs.missionout.Util.SharedPrefUtil
 import com.beaterboofs.missionout.databinding.FragmentDetailBinding
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.firestore.FirebaseFirestore
@@ -60,7 +63,6 @@ class DetailFragment(docIdVal: String) : Fragment() {
             // People with editor status (TODO - add check in database) create a document in the
             // "alarms" collection. Google Cloud Function will then run send out the alarm.
             val mission = binding.missionInstance
-
             // TODO - Add a confirmation screen to prevent butt dials
             val db = FirebaseFirestore.getInstance()
             val teamDocId = SharedPrefUtil.getTeamDocId(this.requireContext())

@@ -1,4 +1,4 @@
-package com.beaterboofs.missionout
+package com.beaterboofs.missionout.Util
 
 import android.content.Context
 import androidx.core.content.edit

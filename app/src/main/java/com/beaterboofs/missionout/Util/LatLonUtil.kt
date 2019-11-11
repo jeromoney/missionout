@@ -1,4 +1,4 @@
-package com.beaterboofs.missionout
+package com.beaterboofs.missionout.Util
 
 data class LatLon(val type: String, val range: Double)
 

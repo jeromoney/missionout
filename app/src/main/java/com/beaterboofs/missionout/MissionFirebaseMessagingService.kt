@@ -12,8 +12,8 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.beaterboofs.missionout.FirestoreRemoteDataSource.sendTokenToServer
-import com.beaterboofs.missionout.SharedPrefUtil.getToken
-import com.beaterboofs.missionout.SharedPrefUtil.setToken
+import com.beaterboofs.missionout.Util.SharedPrefUtil.getToken
+import com.beaterboofs.missionout.Util.SharedPrefUtil.setToken
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage

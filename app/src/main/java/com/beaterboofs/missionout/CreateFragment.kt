@@ -18,6 +18,9 @@ import kotlinx.coroutines.launch
 import android.app.Activity
 import androidx.core.view.children
 import com.beaterboofs.missionout.FirestoreRemoteDataSource.addMissionToDB
+import com.beaterboofs.missionout.Util.LATITUDE
+import com.beaterboofs.missionout.Util.LONGITUDE
+import com.beaterboofs.missionout.Util.LatLon
 import com.beaterboofs.missionout.ui.mission.DetailFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
@@ -135,7 +138,8 @@ class CreateMissionFragment : Fragment() {
             locationDescription = locationDescription,
             needForAction = needForAction,
             docId = null,
-            responseMap = null)
+            responseMap = null
+        )
     }
 
     private fun isTextInError(): Boolean { // TODO - is there a better way to do data validation?
