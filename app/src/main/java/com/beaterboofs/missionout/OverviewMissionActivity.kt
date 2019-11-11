@@ -46,10 +46,7 @@ class OverviewMissionActivity : AppCompatActivity() {
             fab.show()
             // Create a new mission
             fab.setOnClickListener {
-                intent = Intent(this, MissionActivity::class.java).apply {
-                    putExtra("create_mission", true)
-                }
-                startActivity(intent)
+                // TODO - navigate to createmission
             }
         }
 
@@ -58,10 +55,7 @@ class OverviewMissionActivity : AppCompatActivity() {
 
     private fun missionItemClicked(missionInstance: Mission){
         // Launch Mission Activity Detail with clicked item
-        intent = Intent(this, MissionActivity::class.java).apply {
-            putExtra("docId", missionInstance.docId)
-        }
-        startActivity(intent)
+       // Navigate to detail fragment
     }
 
 

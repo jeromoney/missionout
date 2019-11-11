@@ -80,7 +80,7 @@ class CreateMissionFragment : Fragment() {
                 val docID = addMissionToDB(context!!, missionInstance)
                 //Stop spinner
                 if (docID != null) {
-                    launchDisplayFragment(docID)
+                    // TODO - Navigate to display fragment
                 }
                 else {
                     // error occured so display snackbar
@@ -108,13 +108,7 @@ class CreateMissionFragment : Fragment() {
         imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
     }
 
-    private fun launchDisplayFragment(docID: String) {
-        // This segment depends on completion of coroutine
-        val fragment = DetailFragment.newInstance(docID)
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.mission_detail, fragment)
-            .commitNow()
-    }
+
 
 
 

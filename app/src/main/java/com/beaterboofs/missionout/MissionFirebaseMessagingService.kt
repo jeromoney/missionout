@@ -51,14 +51,11 @@ class MissionFirebaseMessagingService : FirebaseMessagingService() {
         val docId = p0.data["docId"]
         val notificationId = 12344
         // Create an explicit intent for an Activity in your app
-        val intent = Intent(this, MissionActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        intent.putExtra("docId", docId)
+        // TODO - create deep link to detail page
         val pendingIntent: PendingIntent = PendingIntent.getActivity(
             this,
             UUID.randomUUID().hashCode() ,
-            intent,
+            null,
             0)
         val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         // play sound

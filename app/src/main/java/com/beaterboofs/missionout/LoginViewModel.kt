@@ -11,12 +11,12 @@ class LoginViewModel : ViewModel() {
     }
 
     val authenticationState = MutableLiveData<AuthenticationState>()
-    var username: String
+    val username = MutableLiveData<String>()
 
     init {
         // TODO - Check if user is logged in
         authenticationState.value = AuthenticationState.UNAUTHENTICATED
-        username = ""
+        username.value = ""
     }
 
     fun refuseAuthentication(){

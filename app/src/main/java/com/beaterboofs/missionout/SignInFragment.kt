@@ -182,7 +182,7 @@ class SignInFragment : Fragment(), View.OnClickListener {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
-                    val user = auth.currentUser
+                    val user  = auth.currentUser!!
                     updateUI(user)
                     SharedPrefUtil.updateSharedPreferences(requireActivity(), user)
                     // delete instance id to make sure it aligns with user accounts
@@ -190,11 +190,17 @@ class SignInFragment : Fragment(), View.OnClickListener {
                         FirebaseInstanceId.getInstance().deleteInstanceId()
                     } // TODO - remove globals scope
 
+                    // Change state of viewmodel to show that user is logged in
+                    viewModel.authenticationState.value = LoginViewModel.AuthenticationState.AUTHENTICATED
+                    viewModel.username.value = user.displayName
+                    findNavController().navigate(R.id.overviewFragment)
+
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
                     Snackbar.make(main_layout, "Authentication Failed.", Snackbar.LENGTH_SHORT)
                         .show()
+                    viewModel.authenticationState.value = LoginViewModel.AuthenticationState.UNAUTHENTICATED
                     updateUI(null)
                 }
 
