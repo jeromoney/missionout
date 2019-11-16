@@ -17,7 +17,7 @@ import androidx.navigation.fragment.navArgs
 import com.beaterboofs.missionout.DataClass.Alarm
 import com.beaterboofs.missionout.Util.SharedPrefUtil
 import com.beaterboofs.missionout.databinding.FragmentDetailBinding
-import com.beaterboofs.missionout.ui.mission.DetailViewModel
+import com.beaterboofs.missionout.DetailViewModel
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.firestore.FirebaseFirestore
 

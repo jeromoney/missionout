@@ -1,14 +1,9 @@
 package com.beaterboofs.missionout
 
-import android.os.Parcel
-import android.os.Parcelable
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.PropertyName
 import com.google.firebase.firestore.ServerTimestamp
-import kotlinx.android.parcel.Parceler
-import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
 import kotlin.collections.HashMap
 
 data class Mission(

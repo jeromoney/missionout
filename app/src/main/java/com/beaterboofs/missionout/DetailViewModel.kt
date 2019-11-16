@@ -1,10 +1,9 @@
-package com.beaterboofs.missionout.ui.mission
+package com.beaterboofs.missionout
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
-import com.beaterboofs.missionout.Mission
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
