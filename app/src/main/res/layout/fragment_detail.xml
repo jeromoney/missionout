@@ -76,10 +76,10 @@
             >
 
             <AutoCompleteTextView
+                style="@style/TextAppearance.AppCompat.Widget.DropDownItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/responding_dropdown_items"
-                android:editable="false"/>
+                android:id="@+id/responding_dropdown_items" />
 
         </com.google.android.material.textfield.TextInputLayout>
         <TextView

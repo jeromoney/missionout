@@ -52,11 +52,12 @@ class OverviewFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        recyclerView = view.findViewById<RecyclerView>(R.id.mission_recycler_view).apply {
-            setHasFixedSize(true)
-            layoutManager = viewManager
-            adapter = viewAdapter
+        if (!(this::recyclerView.isInitialized)) {
+            recyclerView = view.findViewById<RecyclerView>(R.id.mission_recycler_view).apply {
+                setHasFixedSize(true)
+                layoutManager = viewManager
+                adapter = viewAdapter
+            }
         }
         loadMissions()
 

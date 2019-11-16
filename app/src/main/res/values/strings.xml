@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">MissionOut</string>
 
+    <string name="date_format">%1$td/%1$tm/%1$tY</string>
+
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="respond">Respond</string>
