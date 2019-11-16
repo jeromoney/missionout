@@ -10,6 +10,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.beaterboofs.missionout.Util.SharedPrefUtil
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObjects
+import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.overview_fragment.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,6 +33,13 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class OverviewFragment : Fragment() {
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private lateinit var viewManager: RecyclerView.LayoutManager
+    private lateinit var dataset : List<Mission>
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -37,6 +52,24 @@ class OverviewFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        recyclerView = view.findViewById<RecyclerView>(R.id.mission_recycler_view).apply {
+            setHasFixedSize(true)
+            layoutManager = viewManager
+            adapter = viewAdapter
+        }
+        loadMissions()
+
+        // Floating action bar with create should only be shown to editors
+        if (SharedPrefUtil.isEditor(context!!)) {
+            fab.show()
+            // Create a new mission
+            fab.setOnClickListener {
+                // TODO - navigate to createmission
+            }
+        }
+
+
         // If user is not logged in, navigate to login screen
         val navController = findNavController()
         viewModel.authenticationState.observe(viewLifecycleOwner, Observer { authenticationState ->
@@ -59,6 +92,16 @@ class OverviewFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+
+
+
+        dataset = listOf()
+        viewManager = LinearLayoutManager(context)
+        viewAdapter = MissionAdapter(dataset, { missionInstance : Mission -> missionItemClicked(missionInstance.docId!!) })
+
+
+
     }
 
 
@@ -116,5 +159,39 @@ class OverviewFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    fun loadMissions() {
+        // TODO -- move to own class
+        // asynchronous operation
+        // direct user based on sign in status
+        val teamDocId = SharedPrefUtil.getTeamDocId(context!!)
+        val db = Firebase.firestore
+        // Get missions within a certain timeframe
+        val collectionPath = "/teams/${teamDocId}/missions"
+        val query = db
+            .collection(collectionPath)
+            .orderBy("time", Query.Direction.DESCENDING)
+            .limit(5)
+            .get()
+
+        query.addOnSuccessListener {snapshots->
+            val missionList = snapshots.toObjects<Mission>()
+            // I need to pass doc id to mission. probably a better way to do this
+            for (i in 0 until snapshots.size())
+            {
+                val docId = snapshots.documents[i].id
+                missionList[i].docId = docId
+            }
+            recyclerView.adapter = MissionAdapter(missionList,{ missionInstance : Mission -> missionItemClicked(
+                missionInstance.docId!!
+            ) })
+        }
+    }
+
+    private fun missionItemClicked(missionDocID: String){
+        // Launch Mission Activity Detail with clicked item
+        // Navigate to detail fragment
+        val i = 1
     }
 }

@@ -75,7 +75,7 @@ class DetailFragment(docIdVal: String) : Fragment() {
             db.collection("alarms").add(alarm)
                 .addOnSuccessListener {
                 var i  = 1
-                    //TODO - handle sucess
+                    //TODO - handle success
             }
                 .addOnFailureListener {
                     var i = 1
