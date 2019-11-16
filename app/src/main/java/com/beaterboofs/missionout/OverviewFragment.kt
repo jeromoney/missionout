@@ -66,6 +66,7 @@ class OverviewFragment : Fragment() {
             // Create a new mission
             fab.setOnClickListener {
                 // TODO - navigate to createmission
+                findNavController().navigate(R.id.createFragment)
             }
         }
 
@@ -192,6 +193,7 @@ class OverviewFragment : Fragment() {
     private fun missionItemClicked(missionDocID: String){
         // Launch Mission Activity Detail with clicked item
         // Navigate to detail fragment
-        val i = 1
+        val detailAction = MobileNavigationDirections.actionGlobalDetailFragment(missionDocID)
+        findNavController().navigate(detailAction)
     }
 }

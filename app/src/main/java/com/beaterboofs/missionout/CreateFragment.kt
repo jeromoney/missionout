@@ -21,7 +21,6 @@ import com.beaterboofs.missionout.FirestoreRemoteDataSource.addMissionToDB
 import com.beaterboofs.missionout.Util.LATITUDE
 import com.beaterboofs.missionout.Util.LONGITUDE
 import com.beaterboofs.missionout.Util.LatLon
-import com.beaterboofs.missionout.ui.mission.DetailFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 

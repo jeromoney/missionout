@@ -71,7 +71,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/responding_dropdown"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:hint="@string/responding"
             app:layout_constraintTop_toBottomOf="@id/time_text_view"
             >

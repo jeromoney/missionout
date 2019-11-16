@@ -1,4 +1,4 @@
-package com.beaterboofs.missionout.ui.mission
+package com.beaterboofs.missionout
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -10,27 +10,27 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import com.beaterboofs.missionout.BR
-import com.beaterboofs.missionout.FirestoreRemoteDataSource
+import androidx.navigation.fragment.navArgs
 import com.beaterboofs.missionout.DataClass.Alarm
-import com.beaterboofs.missionout.R
 import com.beaterboofs.missionout.Util.SharedPrefUtil
 import com.beaterboofs.missionout.databinding.FragmentDetailBinding
+import com.beaterboofs.missionout.ui.mission.DetailViewModel
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.firestore.FirebaseFirestore
 
 import kotlinx.android.synthetic.main.fragment_detail.*
 
 
-class DetailFragment(docIdVal: String) : Fragment() {
-    private val docIdFrag = docIdVal
+class DetailFragment : Fragment() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        docIdVal = args.docID
+    }
+
     private val TAG = "DetailFragment"
     private lateinit var viewModel: DetailViewModel
-    companion object {
-        @JvmStatic
-        fun newInstance(docIdVal: String) =
-            DetailFragment(docIdVal)
-    }
+    private lateinit var docIdVal : String
+    private val args: DetailFragmentArgs by navArgs()
 
 
     override fun onCreateView(
@@ -47,9 +47,9 @@ class DetailFragment(docIdVal: String) : Fragment() {
         binding.lifecycleOwner = this
         viewModel = ViewModelProviders.of(this).get(DetailViewModel::class.java)
         viewModel.apply {
-            docId = docIdFrag
+            docId = docIdVal
             teamDocId = SharedPrefUtil.getTeamDocId(context!!.applicationContext)!!
-            getMission().observe(this@DetailFragment, Observer {
+            getMission().observe(viewLifecycleOwner, Observer {
                 // update UI
                 binding.setVariable(BR.missionInstance, viewModel.getMission().value)
             })
@@ -70,7 +70,7 @@ class DetailFragment(docIdVal: String) : Fragment() {
                 description = mission!!.description,
                 action = mission?.needForAction,
                 teamDocId = teamDocId!!,
-                missionDocID = docIdFrag
+                missionDocID = docIdVal
             )
             db.collection("alarms").add(alarm)
                 .addOnSuccessListener {
