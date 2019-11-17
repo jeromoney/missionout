@@ -194,7 +194,8 @@ class OverviewFragment : Fragment() {
     private fun missionItemClicked(missionDocID: String){
         // Launch Mission Activity Detail with clicked item
         // Navigate to detail fragment
-        val detailAction = MobileNavigationDirections.actionGlobalDetailFragment(missionDocID)
-        findNavController().navigate(detailAction)
+
+        val action = OverviewFragmentDirections.actionOverviewFragmentToDetailMissionFragment(missionDocID)
+        findNavController().navigate(action)
     }
 }

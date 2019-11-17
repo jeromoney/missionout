@@ -78,7 +78,6 @@ class SignInFragment : Fragment(), View.OnClickListener {
             R.id.signInButton -> signIn()
             R.id.signOutButton -> signOut()
             R.id.disconnectButton -> revokeAccess()
-            R.id.overviewButton -> missionOverview() //TODO - REMOVE IN PRODUCTION
             R.id.getTokenButton -> getToken() //TODO - REMOVE IN PRODUCTION
         }
     }
@@ -142,7 +141,6 @@ class SignInFragment : Fragment(), View.OnClickListener {
         signInButton.setOnClickListener(this)
         signOutButton.setOnClickListener(this)
         disconnectButton.setOnClickListener(this)
-        overviewButton.setOnClickListener(this)
         getTokenButton.setOnClickListener(this)
 
     }
@@ -183,7 +181,6 @@ class SignInFragment : Fragment(), View.OnClickListener {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
                     val user  = auth.currentUser!!
-                    updateUI(user)
                     SharedPrefUtil.updateSharedPreferences(requireActivity(), user)
                     // delete instance id to make sure it aligns with user accounts
                     GlobalScope.launch {

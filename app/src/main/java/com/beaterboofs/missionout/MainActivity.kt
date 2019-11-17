@@ -3,8 +3,6 @@ package com.beaterboofs.missionout
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment
 import kotlinx.android.synthetic.main.navigation_activity.*
