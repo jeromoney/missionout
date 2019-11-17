@@ -45,6 +45,10 @@ class OverviewFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        dataset = listOf()
+        viewManager = LinearLayoutManager(context)
+        viewAdapter = MissionAdapter(dataset, { missionInstance : Mission -> missionItemClicked(missionInstance.docId!!) })
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.overview_fragment, container, false)
     }
@@ -52,13 +56,12 @@ class OverviewFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (!(this::recyclerView.isInitialized)) {
             recyclerView = view.findViewById<RecyclerView>(R.id.mission_recycler_view).apply {
                 setHasFixedSize(true)
                 layoutManager = viewManager
                 adapter = viewAdapter
             }
-        }
+
         loadMissions()
 
         // Floating action bar with create should only be shown to editors
@@ -98,9 +101,7 @@ class OverviewFragment : Fragment() {
 
 
 
-        dataset = listOf()
-        viewManager = LinearLayoutManager(context)
-        viewAdapter = MissionAdapter(dataset, { missionInstance : Mission -> missionItemClicked(missionInstance.docId!!) })
+
 
 
 
