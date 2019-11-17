@@ -28,8 +28,6 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         docIdVal = args.docID
-
-
     }
 
     private val TAG = "DetailFragment"
