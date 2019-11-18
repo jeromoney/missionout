@@ -33,7 +33,10 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <activity android:name=".MainActivity">
+            <nav-graph android:value="@navigation/mobile_navigation" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

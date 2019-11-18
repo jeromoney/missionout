@@ -98,15 +98,7 @@ class OverviewFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
 
-
-
-
-
-
-
-
     }
-
 
 
     // TODO: Rename method, update argument and hook method into UI event

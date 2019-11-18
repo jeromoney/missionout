@@ -256,13 +256,6 @@ class SignInFragment : Fragment(), View.OnClickListener {
     }
 
     //TODO - REMOVE IN PRODUCTION VERSION
-    fun missionOverview() {
-        // TODO - navigate to overviewfragment
-
-        findNavController().navigate(R.id.overviewFragment)
-    }
-
-    //TODO - REMOVE IN PRODUCTION VERSION
     fun getToken() {
         FirebaseInstanceId.getInstance().instanceId
             .addOnCompleteListener(OnCompleteListener { task ->

@@ -41,6 +41,9 @@
         android:id="@+id/detailFragment"
         android:name="com.beaterboofs.missionout.DetailFragment"
         android:label="DetailFragment" >
+        <deepLink
+            android:id="@+id/detailDeepLink"
+            app:uri="missionout://www.beaterboofs.com/{docID}" />
         <argument
             android:name="docID"
             app:argType="string" />
@@ -52,4 +55,5 @@
             android:name="docID"
             app:argType="string" />
     </action>
+
 </navigation>

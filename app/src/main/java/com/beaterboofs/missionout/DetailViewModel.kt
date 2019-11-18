@@ -17,6 +17,7 @@ class DetailViewModel() : ViewModel() {
     companion object {
         val TAG = "DetailViewModel"
     }
+    // TODO - When the viewmodel already exists, the fragment is passing in a new docID, but it's not refreshing
 
     private val missionInstance: LiveData<Mission> = liveData(Dispatchers.IO) {
         val db = Firebase.firestore

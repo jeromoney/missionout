@@ -2,6 +2,7 @@ package com.beaterboofs.missionout
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 class LoginViewModel : ViewModel() {
     enum class AuthenticationState {
@@ -15,7 +16,15 @@ class LoginViewModel : ViewModel() {
 
     init {
         // TODO - Check if user is logged in
-        authenticationState.value = AuthenticationState.UNAUTHENTICATED
+        val auth = FirebaseAuth.getInstance()
+        authenticationState.apply {
+            if (auth.currentUser == null){
+                value = AuthenticationState.UNAUTHENTICATED
+            }
+            else {
+                value = AuthenticationState.AUTHENTICATED
+            }
+        }
         username.value = ""
     }
 

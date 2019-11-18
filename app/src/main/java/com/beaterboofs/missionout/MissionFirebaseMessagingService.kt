@@ -8,9 +8,11 @@ import android.content.Intent
 import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.navigation.NavDeepLinkBuilder
 import com.beaterboofs.missionout.FirestoreRemoteDataSource.sendTokenToServer
 import com.beaterboofs.missionout.Util.SharedPrefUtil.getToken
 import com.beaterboofs.missionout.Util.SharedPrefUtil.setToken
@@ -52,11 +54,12 @@ class MissionFirebaseMessagingService : FirebaseMessagingService() {
         val notificationId = 12344
         // Create an explicit intent for an Activity in your app
         // TODO - create deep link to detail page
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(
-            this,
-            UUID.randomUUID().hashCode() ,
-            null,
-            0)
+        val uri = "missionout://www.beaterboofs.com/${docId}"
+
+
+        val notificationIntent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+        val pendingIntent = PendingIntent.getActivity(baseContext, 0, notificationIntent,0)
+
         val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         // play sound
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
