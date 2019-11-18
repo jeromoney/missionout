@@ -27,6 +27,8 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         docIdVal = args.docID
+        detailViewModel.updateModel(docIdVal)
+
     }
     private val detailViewModel: DetailViewModel by activityViewModels()
 
@@ -47,8 +49,9 @@ class DetailFragment : Fragment() {
             false
         )
         detailViewModel.apply {
-            docId = args.docID
-            teamDocId = SharedPrefUtil.getTeamDocId(context!!.applicationContext)!!
+            vmDocId = args.docID
+            teamDocId = SharedPrefUtil.getTeamDocId(context!!.applicationContext)!! // TODO - this logic should be moved to VM
+
             getMission().observe(viewLifecycleOwner, Observer { mission->
                 binding.missionInstance = mission
             })
@@ -111,7 +114,7 @@ class DetailFragment : Fragment() {
                     id: Long
                 ) {
                     val response = (view as MaterialTextView).text as String
-                    FirestoreRemoteDataSource.sendResponse(context, response, detailViewModel.docId)
+                    FirestoreRemoteDataSource.sendResponse(context, response, detailViewModel.vmDocId)
                 }
             }
         }

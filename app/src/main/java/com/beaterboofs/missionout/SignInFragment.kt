@@ -100,6 +100,9 @@ class SignInFragment : Fragment(), View.OnClickListener {
         auth = FirebaseAuth.getInstance()
 
         // [END initialize_auth]
+        // If app ever navigates to this fragment, that means we want to log out the user
+        revokeAccess()
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,7 +111,6 @@ class SignInFragment : Fragment(), View.OnClickListener {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-
 
     }
 
