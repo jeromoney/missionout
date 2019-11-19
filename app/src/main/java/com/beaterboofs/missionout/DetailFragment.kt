@@ -57,6 +57,17 @@ class DetailFragment : Fragment() {
                 binding.missionInstance = mission
             })
         }
+
+        loginViewModel.editor.observe(viewLifecycleOwner, Observer { isEditor ->
+            if (isEditor){
+                // Floating action bar with alarm should only be shown to editors
+                    alarm_fab.show()
+            }
+            else {
+                alarm_fab.hide()
+            }
+        })
+
         return binding.root
     }
 
@@ -84,7 +95,7 @@ class DetailFragment : Fragment() {
             val alarm = Alarm(
                 description = mission!!.description,
                 action = mission.needForAction,
-                teamDocId = teamDocId!!,
+                teamDocId = teamDocId,
                 missionDocID = docIdVal
             )
             db.collection("alarms").add(alarm)
@@ -120,12 +131,7 @@ class DetailFragment : Fragment() {
             }
         }
 
-        // Set up alarm fab
-        // Floating action bar with create should only be shown to editors
-        alarm_fab.hide()
-        if (SharedPrefUtil.isEditor(this.requireContext())){
-            alarm_fab.show()
-        }
+
     }
 
 }
