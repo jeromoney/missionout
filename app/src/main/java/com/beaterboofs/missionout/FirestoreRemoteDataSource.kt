@@ -2,11 +2,17 @@ package com.beaterboofs.missionout
 
 import android.content.Context
 import android.util.Log
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment.findNavController
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.beaterboofs.missionout.Util.SharedPrefUtil
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 
@@ -42,7 +48,7 @@ object FirestoreRemoteDataSource {
      * When a new token is generated, the client sends the token to the server so it can generate
      * message addresses. The old token -- if exists --  is deleted from database
      */
-    suspend fun sendTokenToServer(userUID: String, token: String, oldToken: String?){
+    suspend fun addTokenToServer(userUID: String, token: String, oldToken: String?){
         val db = Firebase.firestore
         try {
             val query = db.collection("users").whereEqualTo("userUID",userUID).limit(1).get().await()
@@ -62,4 +68,34 @@ object FirestoreRemoteDataSource {
         }
     }
 
+    fun getMissions(teamDocId : String, recyclerView : RecyclerView, fragment: Fragment){
+        val db = Firebase.firestore
+        // Get missions within a certain timeframe
+        val collectionPath = "/teams/${teamDocId}/missions"
+        val query = db
+            .collection(collectionPath)
+            .orderBy("time", Query.Direction.DESCENDING)
+            .limit(5)
+            .get()
+
+        query.addOnSuccessListener {snapshots->
+            val missionList = snapshots.toObjects<Mission>()
+            // I need to pass doc id to mission. probably a better way to do this
+            for (i in 0 until snapshots.size())
+            {
+                val docId = snapshots.documents[i].id
+                missionList[i].docId = docId
+            }
+            recyclerView.adapter = MissionAdapter(missionList,{ missionInstance : Mission -> missionItemClicked(
+                missionInstance.docId!!, fragment
+            ) })
+        }
+    }
+
+    private fun missionItemClicked(missionDocID: String, fragment: Fragment){
+        // Launch Mission Activity Detail with clicked item
+        // Navigate to detail fragment
+        val action = OverviewFragmentDirections.actionOverviewFragmentToDetailMissionFragment(missionDocID)
+        findNavController(fragment).navigate(action)
+    }
 }

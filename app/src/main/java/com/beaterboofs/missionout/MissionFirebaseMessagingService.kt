@@ -12,8 +12,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.navigation.NavDeepLinkBuilder
-import com.beaterboofs.missionout.FirestoreRemoteDataSource.sendTokenToServer
+import com.beaterboofs.missionout.FirestoreRemoteDataSource.addTokenToServer
 import com.beaterboofs.missionout.Util.SharedPrefUtil.getToken
 import com.beaterboofs.missionout.Util.SharedPrefUtil.setToken
 import com.google.firebase.auth.FirebaseAuth
@@ -21,7 +20,6 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.util.*
 
 class MissionFirebaseMessagingService : FirebaseMessagingService() {
     private val CHANNEL_ID = "1234"
@@ -104,7 +102,7 @@ class MissionFirebaseMessagingService : FirebaseMessagingService() {
         setToken(applicationContext, token)
         val userUID = FirebaseAuth.getInstance().uid!!
         GlobalScope.launch {
-            sendTokenToServer(userUID, token, oldToken)
+            addTokenToServer(userUID, token, oldToken)
         }
     }
 }

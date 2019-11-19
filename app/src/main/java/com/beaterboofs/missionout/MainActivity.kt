@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity(),
 
         navController.addOnDestinationChangedListener{
             controller, destination, arguments ->
-            toolbar.title = loginViewModel.username.value
-            toolbar.subtitle = loginViewModel.username.value
+            toolbar.title = loginViewModel.user.value?.displayName
+            toolbar.subtitle = loginViewModel.user.value?.email?.substringAfter("@")
         }
         menu_sign_out.setOnClickListener {
             navController.navigate(R.id.signInFragment)

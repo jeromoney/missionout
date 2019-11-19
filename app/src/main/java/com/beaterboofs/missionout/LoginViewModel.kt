@@ -3,6 +3,7 @@ package com.beaterboofs.missionout
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class LoginViewModel : ViewModel() {
     enum class AuthenticationState {
@@ -12,20 +13,27 @@ class LoginViewModel : ViewModel() {
     }
 
     val authenticationState = MutableLiveData<AuthenticationState>()
-    val username = MutableLiveData<String>()
+    val user = MutableLiveData<FirebaseUser>()
+    val teamDocID = MutableLiveData<String?>()
+    val editor = MutableLiveData<Boolean>()
 
     init {
-        // TODO - Check if user is logged in
         val auth = FirebaseAuth.getInstance()
         authenticationState.apply {
             if (auth.currentUser == null){
+                // User is not logged in
                 value = AuthenticationState.UNAUTHENTICATED
+                user.value = null
+                teamDocID.value = null
+                editor.value = false
             }
             else {
                 value = AuthenticationState.AUTHENTICATED
+                user.value = auth.currentUser
+                teamDocID.value = "raux5KIhuIL84bBmPSPs"
+                updateClaims()
             }
         }
-        username.value = ""
     }
 
     fun refuseAuthentication(){
@@ -38,4 +46,11 @@ class LoginViewModel : ViewModel() {
     }
 
 
+    fun updateClaims() {
+        FirebaseAuth.getInstance().currentUser!!.getIdToken(true).addOnSuccessListener { result -> // TODO - convert to coroutine
+            val claims = result?.claims ?: return@addOnSuccessListener
+            editor.value = claims.getOrDefault("editor",false) as Boolean
+            teamDocID.value = claims.getOrDefault("teamDocID", null) as String?
+        }
+    }
 }

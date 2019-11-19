@@ -31,6 +31,7 @@ class DetailFragment : Fragment() {
 
     }
     private val detailViewModel: DetailViewModel by activityViewModels()
+    private val loginViewModel: LoginViewModel by activityViewModels()
 
     private val TAG = "DetailFragment"
     private lateinit var docIdVal : String
@@ -50,7 +51,7 @@ class DetailFragment : Fragment() {
         )
         detailViewModel.apply {
             vmDocId = args.docID
-            teamDocId = SharedPrefUtil.getTeamDocId(context!!.applicationContext)!! // TODO - this logic should be moved to VM
+            teamDocId = loginViewModel.teamDocID.value!!
 
             getMission().observe(viewLifecycleOwner, Observer { mission->
                 binding.missionInstance = mission
@@ -66,7 +67,7 @@ class DetailFragment : Fragment() {
         // enable click on geopoint to external uri
         location_text_view.setOnClickListener {
             val geoPoint = detailViewModel.getMission().value!!.location!!
-            val gmmIntentUri = Uri.parse("geo:${geoPoint.latitude},${geoPoint.longitude}")
+            val gmmIntentUri = Uri.parse("geo:0,0?z=5&q=${geoPoint.latitude},${geoPoint.longitude}")
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
             startActivity(mapIntent)
         }
@@ -79,7 +80,7 @@ class DetailFragment : Fragment() {
             val mission = binding.missionInstance
             // TODO - Add a confirmation screen to prevent butt dials
             val db = FirebaseFirestore.getInstance()
-            val teamDocId = SharedPrefUtil.getTeamDocId(this.requireContext())
+            val teamDocId = loginViewModel.teamDocID.value!!
             val alarm = Alarm(
                 description = mission!!.description,
                 action = mission.needForAction,

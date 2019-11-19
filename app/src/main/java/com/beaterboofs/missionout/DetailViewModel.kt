@@ -9,10 +9,8 @@ import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 
-class DetailViewModel() : ViewModel() {
-    override fun onCleared() {
-        super.onCleared()
-    }
+class DetailViewModel: ViewModel() {
+
 
     lateinit var vmDocId: String
     lateinit var teamDocId: String

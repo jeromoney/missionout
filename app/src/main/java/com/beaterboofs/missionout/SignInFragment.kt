@@ -62,7 +62,7 @@ class SignInFragment : Fragment(), View.OnClickListener {
     private var param1: String? = null
     private var param2: String? = null
     private var listener: OnFragmentInteractionListener? = null
-    private val viewModel: LoginViewModel by activityViewModels()
+    private val loginViewModel: LoginViewModel by activityViewModels()
 
     companion object {
         private const val TAG = "SignInFragment"
@@ -182,16 +182,20 @@ class SignInFragment : Fragment(), View.OnClickListener {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
-                    val user  = auth.currentUser!!
-                    SharedPrefUtil.updateSharedPreferences(requireActivity(), user)
+                    val firebaseUser  = auth.currentUser!!
                     // delete instance id to make sure it aligns with user accounts
                     GlobalScope.launch {
                         FirebaseInstanceId.getInstance().deleteInstanceId()
                     } // TODO - remove globals scope
 
                     // Change state of viewmodel to show that user is logged in
-                    viewModel.authenticationState.value = LoginViewModel.AuthenticationState.AUTHENTICATED
-                    viewModel.username.value = user.displayName
+                    loginViewModel.apply {
+                        authenticationState.value = LoginViewModel.AuthenticationState.AUTHENTICATED
+                        user.value = firebaseUser
+                        updateClaims()
+                    }
+
+
                     findNavController().navigate(R.id.overviewFragment)
 
                 } else {
@@ -199,7 +203,7 @@ class SignInFragment : Fragment(), View.OnClickListener {
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
                     Snackbar.make(main_layout, "Authentication Failed.", Snackbar.LENGTH_SHORT)
                         .show()
-                    viewModel.authenticationState.value = LoginViewModel.AuthenticationState.UNAUTHENTICATED
+                    loginViewModel.authenticationState.value = LoginViewModel.AuthenticationState.UNAUTHENTICATED
                     updateUI(null)
                 }
 

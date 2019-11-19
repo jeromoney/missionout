@@ -12,11 +12,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.beaterboofs.missionout.Util.SharedPrefUtil
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObjects
-import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.overview_fragment.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -37,6 +32,8 @@ class OverviewFragment : Fragment() {
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var dataset : List<Mission>
+    private val loginViewModel: LoginViewModel by activityViewModels()
+
 
 
 
@@ -45,6 +42,29 @@ class OverviewFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        // Set up listener so create mission button only shows to editors
+        loginViewModel.editor.observe(viewLifecycleOwner, Observer { isEditor ->
+            if (isEditor){
+                // show fab
+                // Floating action bar with create should only be shown to editors
+                fab.show()
+                // Create a new mission
+                fab.setOnClickListener {
+                    findNavController().navigate(R.id.createFragment)
+                }
+            }
+            else{
+                fab.hide()
+            }
+        })
+
+        loginViewModel.teamDocID.observe(viewLifecycleOwner, Observer { teamDocID ->
+            if (teamDocID == null){
+                return@Observer
+            }
+            FirestoreRemoteDataSource.getMissions(loginViewModel.teamDocID.value!!, recyclerView, this)
+        })
 
         dataset = listOf()
         viewManager = LinearLayoutManager(context)
@@ -62,17 +82,8 @@ class OverviewFragment : Fragment() {
                 adapter = viewAdapter
             }
 
-        loadMissions()
 
-        // Floating action bar with create should only be shown to editors
-        if (SharedPrefUtil.isEditor(context!!)) {
-            fab.show()
-            // Create a new mission
-            fab.setOnClickListener {
-                // TODO - navigate to createmission
-                findNavController().navigate(R.id.createFragment)
-            }
-        }
+
 
 
         // If user is not logged in, navigate to login screen
@@ -156,38 +167,9 @@ class OverviewFragment : Fragment() {
             }
     }
 
-    fun loadMissions() {
-        // TODO -- move to own class
-        // asynchronous operation
-        // direct user based on sign in status
-        val teamDocId = SharedPrefUtil.getTeamDocId(context!!)
-        val db = Firebase.firestore
-        // Get missions within a certain timeframe
-        val collectionPath = "/teams/${teamDocId}/missions"
-        val query = db
-            .collection(collectionPath)
-            .orderBy("time", Query.Direction.DESCENDING)
-            .limit(5)
-            .get()
-
-        query.addOnSuccessListener {snapshots->
-            val missionList = snapshots.toObjects<Mission>()
-            // I need to pass doc id to mission. probably a better way to do this
-            for (i in 0 until snapshots.size())
-            {
-                val docId = snapshots.documents[i].id
-                missionList[i].docId = docId
-            }
-            recyclerView.adapter = MissionAdapter(missionList,{ missionInstance : Mission -> missionItemClicked(
-                missionInstance.docId!!
-            ) })
-        }
-    }
-
     private fun missionItemClicked(missionDocID: String){
         // Launch Mission Activity Detail with clicked item
         // Navigate to detail fragment
-
         val action = OverviewFragmentDirections.actionOverviewFragmentToDetailMissionFragment(missionDocID)
         findNavController().navigate(action)
     }
