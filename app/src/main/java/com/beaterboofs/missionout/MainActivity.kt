@@ -4,7 +4,9 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.NavHostFragment
 import kotlinx.android.synthetic.main.navigation_activity.*
 
@@ -24,18 +26,18 @@ class MainActivity : AppCompatActivity(),
         setContentView(R.layout.navigation_activity)
 
         // Set up viewmodel for toolbar
-        loginViewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
+        loginViewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java).apply {
+            user.observe(this@MainActivity, Observer {
+                toolbar.title = loginViewModel.user.value?.displayName
+                toolbar.subtitle = loginViewModel.user.value?.email?.substringAfter("@")
+            })
+        }
+
 
         val host: NavHostFragment = supportFragmentManager
             .findFragmentById(R.id.navHostFragment) as NavHostFragment? ?: return
 
         val navController = host.navController
-
-        navController.addOnDestinationChangedListener{
-            controller, destination, arguments ->
-            toolbar.title = loginViewModel.user.value?.displayName
-            toolbar.subtitle = loginViewModel.user.value?.email?.substringAfter("@")
-        }
         menu_sign_out.setOnClickListener {
             navController.navigate(R.id.signInFragment)
         }
