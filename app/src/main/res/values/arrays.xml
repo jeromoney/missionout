@@ -2,6 +2,7 @@
 <resources>
     <string-array
     name="responding_dropdown_menu">
+    <item>Responding?</item>
     <item>Responding</item>
     <item>Delayed</item>
     <item>Standby</item>

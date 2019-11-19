@@ -66,27 +66,19 @@
             android:text="@{missionInstance.time.toString()}"
             tools:text="XX"
             />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/responding_dropdown"
-            android:hint="@string/responding"
+        <androidx.appcompat.widget.AppCompatSpinner
             app:layout_constraintTop_toBottomOf="@id/time_text_view"
-            >
+            android:id="@+id/responding_spinner"
+            android:autofillHints="@string/responding"
+            android:padding="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-            <AutoCompleteTextView
-                style="@style/TextAppearance.AppCompat.Widget.DropDownItem"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/responding_dropdown_items" />
-
-        </com.google.android.material.textfield.TextInputLayout>
         <TextView
             android:id="@+id/response_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/responding_dropdown"
+            app:layout_constraintTop_toBottomOf="@id/responding_spinner"
             android:padding="16dp"
             android:text="@{missionInstance.responseMap.toString()}"
             tools:text="XX"

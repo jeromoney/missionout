@@ -24,7 +24,6 @@ import kotlinx.coroutines.launch
 class MissionFirebaseMessagingService : FirebaseMessagingService() {
     private val CHANNEL_ID = "1234"
 
-
     private fun createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library

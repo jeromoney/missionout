@@ -6,10 +6,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.beaterboofs.missionout.DataClass.Alarm
 import com.beaterboofs.missionout.Util.SharedPrefUtil
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObjects
@@ -97,5 +99,24 @@ object FirestoreRemoteDataSource {
         // Navigate to detail fragment
         val action = OverviewFragmentDirections.actionOverviewFragmentToDetailMissionFragment(missionDocID)
         findNavController(fragment).navigate(action)
+    }
+
+    fun addAlarmToDB(mission: Mission, teamDocId: String, docId: String) {
+        val db = FirebaseFirestore.getInstance()
+        val alarm = Alarm(
+            description = mission!!.description,
+            action = mission.needForAction,
+            teamDocId = teamDocId,
+            missionDocID = docId
+        )
+        db.collection("alarms").add(alarm)
+            .addOnSuccessListener {
+                var i  = 1
+                //TODO - handle success
+            }
+            .addOnFailureListener {
+                var i = 1
+                // TODO - handle failure
+            }
     }
 }

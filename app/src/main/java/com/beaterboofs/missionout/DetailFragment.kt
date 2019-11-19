@@ -9,12 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.beaterboofs.missionout.DataClass.Alarm
-import com.beaterboofs.missionout.Util.SharedPrefUtil
 import com.beaterboofs.missionout.databinding.FragmentDetailBinding
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,7 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_detail.*
 
 
-class DetailFragment : Fragment() {
+class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -67,7 +68,6 @@ class DetailFragment : Fragment() {
                 alarm_fab.hide()
             }
         })
-
         return binding.root
     }
 
@@ -88,50 +88,38 @@ class DetailFragment : Fragment() {
         alarm_fab.setOnClickListener {
             // People with editor status (TODO - add check in database) create a document in the
             // "alarms" collection. Google Cloud Function will then run send out the alarm.
-            val mission = binding.missionInstance
             // TODO - Add a confirmation screen to prevent butt dials
-            val db = FirebaseFirestore.getInstance()
+            val mission = binding.missionInstance!!
             val teamDocId = loginViewModel.teamDocID.value!!
-            val alarm = Alarm(
-                description = mission!!.description,
-                action = mission.needForAction,
-                teamDocId = teamDocId,
-                missionDocID = docIdVal
-            )
-            db.collection("alarms").add(alarm)
-                .addOnSuccessListener {
-                var i  = 1
-                    //TODO - handle success
-            }
-                .addOnFailureListener {
-                    var i = 1
-                    // TODO - handle failure
-                }
-
-
-
+            FirestoreRemoteDataSource.addAlarmToDB(mission, teamDocId, docIdVal)
         }
 
        // set up dropdown box
-        val respondingList = resources.getStringArray(R.array.responding_dropdown_menu)
-        val adapter = ArrayAdapter<String>(context!!,R.layout.dropdown_menu_popup_item,respondingList)
-
-        responding_dropdown_items.apply {
-            setAdapter(adapter) // todo - remove binding
-            onItemClickListener = object : AdapterView.OnItemClickListener{
-                override fun onItemClick(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    val response = (view as MaterialTextView).text as String
-                    FirestoreRemoteDataSource.sendResponse(context, response, detailViewModel.vmDocId)
-                }
-            }
+        responding_spinner.onItemSelectedListener = this
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter.createFromResource(
+            this.requireActivity(),
+            R.array.responding_dropdown_menu,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            responding_spinner.adapter = adapter
         }
+    }
 
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        // Do Nothing
+    }
 
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        if (position == 0){
+            // The first position is the response description and not a response value
+            return
+        }
+        val response = (view as TextView).text as String
+        FirestoreRemoteDataSource.sendResponse(this.requireContext(), response, detailViewModel.vmDocId)
     }
 
 }
