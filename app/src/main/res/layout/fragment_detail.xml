@@ -17,70 +17,15 @@
         android:orientation="vertical"
         >
 
-        <TextView
-            android:id="@+id/description_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="@{missionInstance.description}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Name" />
-
-        <TextView
-            android:id="@+id/need_for_action_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/description_text_view"
-            android:padding="16dp"
-            android:text="@{missionInstance.needForAction}"
-            tools:text="XX" />
-
-        <TextView
-            android:id="@+id/location_description_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/need_for_action_text_view"
-            android:padding="16dp"
-            android:text="@{missionInstance.locationDescription}"
-            tools:text="XX"
-            />
-
-        <TextView
-            android:id="@+id/location_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/location_description_text_view"
-            android:padding="16dp"
-            android:text="@{missionInstance.location.toString()}"
-            tools:text="XX"
-            />
-
-        <TextView
-            android:id="@+id/time_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/location_text_view"
-            android:padding="16dp"
-            android:text="@{missionInstance.time.toString()}"
-            tools:text="XX"
-            />
-        <androidx.appcompat.widget.AppCompatSpinner
-            app:layout_constraintTop_toBottomOf="@id/time_text_view"
-            android:id="@+id/responding_spinner"
-            android:autofillHints="@string/responding"
-            android:padding="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/response_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/responding_spinner"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:padding="16dp"
             android:text="@{missionInstance.responseMap.toString()}"
-            tools:text="XX"
+            tools:text="The bridge concludes with a low B note which clocks in somewhere around 25Hz—not the lowest note in the universe, but pretty durn close. I've long used it as one of my tests for LF accuracy, especially in subwoofers. A good subwoofer will resolve the note, give it dimension, maybe even rumble your room. "
             />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -92,6 +37,124 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@android:drawable/ic_lock_idle_alarm" />
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:theme="@style/Theme.MaterialComponents.Light"
+            android:id="@+id/detail_card"
+            android:layout_width="match_parent"
+            android:layout_height="316dp"
+            android:layout_margin="@dimen/cardview_default_radius"
+            app:cardCornerRadius="3dp"
+            app:cardElevation="2dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                >
+
+                <TextView
+                    android:id="@+id/detail_header_text"
+                    style="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="24dp"
+                    android:firstBaselineToTopHeight="44dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="Lost hiker on Mt Yale"
+                    android:text="@{missionInstance.description}"/>
+                <TextView
+                    style="@style/TextAppearance.MaterialComponents.Caption"
+                    android:id="@+id/detail_time_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:firstBaselineToTopHeight="68dp"
+                    tools:text="November 11 11am"
+                    android:text="@{missionInstance.time.toDate().toString()}"/>
+                <TextView
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:id="@+id/detail_location_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:firstBaselineToTopHeight="100dp"
+                    tools:text="Squaw Creek"
+                    android:text="@{missionInstance.locationDescription}"/>
+                <TextView
+                    style="@style/TextAppearance.MaterialComponents.Body2"
+                    android:id="@+id/detail_description_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:firstBaselineToTopHeight="126dp"
+                    tools:text="We need hikers and snowshoers."
+                    android:text="@{missionInstance.needForAction}"/>
+                <View
+                    android:id="@+id/divider"
+                    app:layout_constraintTop_toBottomOf="@id/detail_description_text"
+                    android:paddingTop="24dp"
+                    android:paddingRight="16dp"
+                    android:paddingLeft="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+                <TextView
+                    style="@style/TextAppearance.MaterialComponents.Body2"
+                    android:id="@+id/detail_response_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:firstBaselineToTopHeight="155dp"
+                    android:text="@string/response"/>
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/detail_response_text"
+                    android:paddingLeft="16dp">
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/response_chip_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:singleLine="true"
+                        app:singleSelection="true"
+                        >
+
+                        <com.google.android.material.chip.Chip
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:id="@+id/responding_chip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Responding"/>
+                        <com.google.android.material.chip.Chip
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:id="@+id/delayed_chip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Delayed"/>
+                        <com.google.android.material.chip.Chip
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:id="@+id/standby_chip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                        android:text="Standby"/>
+                        <com.google.android.material.chip.Chip
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:id="@+id/unavailable_chip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Unavailable"/>
+
+
+                    </com.google.android.material.chip.ChipGroup>
+                </HorizontalScrollView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            
+
+        </com.google.android.material.card.MaterialCardView>
 
 
 

@@ -10,11 +10,14 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.core.view.get
+import androidx.core.view.size
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.beaterboofs.missionout.databinding.FragmentDetailBinding
+import com.google.android.material.chip.Chip
 
 import kotlinx.android.synthetic.main.fragment_detail.*
 
@@ -33,6 +36,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
     private lateinit var docIdVal : String
     private val args: DetailFragmentArgs by navArgs()
     private lateinit var binding: FragmentDetailBinding
+    private var checkedChipID : Int = -1
 
 
     override fun onCreateView(
@@ -51,6 +55,16 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
 
             mission.observe(viewLifecycleOwner, Observer { mission->
                 binding.missionInstance = mission
+                // see if user RSVPed to mission. Set that chip as checked
+                val displayName = loginViewModel.user.value!!.displayName
+                val response = mission.responseMap?.get(displayName) ?: return@Observer
+                for (i in 0 until response_chip_group.size){
+                    val chip = response_chip_group.get(i) as Chip
+                    if (chip.text == response){
+                        checkedChipID = chip.id
+                        response_chip_group.check(checkedChipID)
+                    }
+                }
             })
         }
 
@@ -68,15 +82,24 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        response_chip_group.setOnCheckedChangeListener { group, checkedId ->
+            if (checkedId == -1 || checkedChipID == checkedId){
+                // User clicked on the same option twice
+                return@setOnCheckedChangeListener
+            }
+            val response = group.findViewById<Chip>(checkedId).text.toString()
+            val teamDocID = loginViewModel.teamDocID.value!!
+            FirestoreRemoteDataSource().sendResponse(teamDocID,response,docIdVal)
+        }
 
 
         // enable click on geopoint to external uri
-        location_text_view.setOnClickListener {
-            val geoPoint = detailViewModel.mission.value!!.location!!
-            val gmmIntentUri = Uri.parse("geo:0,0?z=5&q=${geoPoint.latitude},${geoPoint.longitude}")
-            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-            startActivity(mapIntent)
-        }
+//        location_text_view.setOnClickListener {
+//            val geoPoint = detailViewModel.mission.value!!.location!!
+//            val gmmIntentUri = Uri.parse("geo:0,0?z=5&q=${geoPoint.latitude},${geoPoint.longitude}")
+//            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+//            startActivity(mapIntent)
+//        }
 
 
         // set up raise alarm
@@ -89,19 +112,6 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
             FirestoreRemoteDataSource().addAlarmToDB(mission, teamDocId, docIdVal)
         }
 
-       // set up dropdown box
-        responding_spinner.onItemSelectedListener = this
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter.createFromResource(
-            this.requireActivity(),
-            R.array.responding_dropdown_menu,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner
-            responding_spinner.adapter = adapter
-        }
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
