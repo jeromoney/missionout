@@ -5,7 +5,6 @@
     >
     <!-- Inside the layout tag it is possible to set the data tag in order to set one or many variables. For this example we are having an User property-->
     <data>
-
         <variable
             name="missionInstance"
             type="com.beaterboofs.missionout.Mission"

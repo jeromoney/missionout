@@ -76,7 +76,7 @@ class OverviewFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-            recyclerView = view.findViewById<RecyclerView>(R.id.mission_recycler_view).apply {
+            recyclerView = view.findViewById<RecyclerView>(R.id.overview_recycler_view).apply {
                 setHasFixedSize(true)
                 layoutManager = viewManager
                 adapter = viewAdapter

@@ -1,15 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/overview_fragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/mission_recycler_view"
+<layout xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="missionInstance"
+            type="com.beaterboofs.missionout.Mission"
+            />
+    </data>
+    <com.google.android.material.card.MaterialCardView android:theme="@style/Theme.MaterialComponents.Light"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical" />
-</androidx.core.widget.NestedScrollView>
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/cardview_default_radius"
+        app:cardCornerRadius="3dp"
+        app:cardElevation="2dp"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp">
+                    <TextView
+                        android:id="@+id/card_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        tools:text="Lost hiker on Mt Yale"
+                        style="@style/TextAppearance.MaterialComponents.Headline6"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <TextView
+                        android:id="@+id/card_subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        tools:text="November 11 11am"
+                        style="@style/TextAppearance.MaterialComponents.Caption"
+                        app:layout_constraintStart_toStartOf="@+id/card_title"
+                        app:layout_constraintTop_toBottomOf="@+id/card_title" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>
