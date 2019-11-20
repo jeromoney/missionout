@@ -63,7 +63,7 @@ class OverviewFragment : Fragment() {
             if (teamDocID == null){
                 return@Observer
             }
-            FirestoreRemoteDataSource.getMissions(loginViewModel.teamDocID.value!!, recyclerView, this)
+            FirestoreRemoteDataSource().getMissions(loginViewModel.teamDocID.value!!, recyclerView, this)
         })
 
         dataset = listOf()

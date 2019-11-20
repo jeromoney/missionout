@@ -32,11 +32,7 @@
     <fragment
         android:id="@+id/createFragment"
         android:name="com.beaterboofs.missionout.CreateMissionFragment"
-        android:label="CreateMissionFragment" >
-        <action
-            android:id="@+id/action_createFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
-    </fragment>
+        android:label="CreateMissionFragment" />
     <fragment
         android:id="@+id/detailFragment"
         android:name="com.beaterboofs.missionout.DetailFragment"

@@ -9,16 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Spinner
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
-import com.beaterboofs.missionout.DataClass.Alarm
 import com.beaterboofs.missionout.databinding.FragmentDetailBinding
-import com.google.android.material.textview.MaterialTextView
-import com.google.firebase.firestore.FirebaseFirestore
 
 import kotlinx.android.synthetic.main.fragment_detail.*
 
@@ -28,8 +24,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         docIdVal = args.docID
-        detailViewModel.updateModel(docIdVal)
-
+        detailViewModel.updateModel()
     }
     private val detailViewModel: DetailViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels()
@@ -51,10 +46,10 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
             false
         )
         detailViewModel.apply {
-            vmDocId = args.docID
+            docID = args.docID
             teamDocId = loginViewModel.teamDocID.value!!
 
-            getMission().observe(viewLifecycleOwner, Observer { mission->
+            mission.observe(viewLifecycleOwner, Observer { mission->
                 binding.missionInstance = mission
             })
         }
@@ -77,7 +72,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
 
         // enable click on geopoint to external uri
         location_text_view.setOnClickListener {
-            val geoPoint = detailViewModel.getMission().value!!.location!!
+            val geoPoint = detailViewModel.mission.value!!.location!!
             val gmmIntentUri = Uri.parse("geo:0,0?z=5&q=${geoPoint.latitude},${geoPoint.longitude}")
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
             startActivity(mapIntent)
@@ -91,7 +86,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
             // TODO - Add a confirmation screen to prevent butt dials
             val mission = binding.missionInstance!!
             val teamDocId = loginViewModel.teamDocID.value!!
-            FirestoreRemoteDataSource.addAlarmToDB(mission, teamDocId, docIdVal)
+            FirestoreRemoteDataSource().addAlarmToDB(mission, teamDocId, docIdVal)
         }
 
        // set up dropdown box
@@ -119,7 +114,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
             return
         }
         val response = (view as TextView).text as String
-        FirestoreRemoteDataSource.sendResponse(this.requireContext(), response, detailViewModel.vmDocId)
+        FirestoreRemoteDataSource().sendResponse(loginViewModel.teamDocID.value!!, response, detailViewModel.docID)
     }
 
 }

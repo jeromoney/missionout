@@ -17,7 +17,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import android.app.Activity
 import androidx.core.view.children
-import com.beaterboofs.missionout.FirestoreRemoteDataSource.addMissionToDB
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
 import com.beaterboofs.missionout.Util.LATITUDE
 import com.beaterboofs.missionout.Util.LONGITUDE
 import com.beaterboofs.missionout.Util.LatLon
@@ -40,6 +42,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class CreateMissionFragment : Fragment() {
     private val TAG = "CreateMissionFragment"
+    private val loginViewModel: LoginViewModel by activityViewModels()
 
 
 
@@ -76,10 +79,13 @@ class CreateMissionFragment : Fragment() {
 
             val missionInstance = getMissionFromText()
             CoroutineScope(Dispatchers.Main).launch {
-                val docID = addMissionToDB(context!!, missionInstance)
+                val teamDocID = loginViewModel.teamDocID.value!!
+                val docID = FirestoreRemoteDataSource().addMissionToDB(teamDocID, missionInstance)
                 //Stop spinner
                 if (docID != null) {
-                    // TODO - Navigate to display fragment
+                    val action = MobileNavigationDirections.actionGlobalDetailFragment(docID)
+                    val options = NavOptions.Builder().setLaunchSingleTop(true).build()
+                    findNavController().navigate(action,options)
                 }
                 else {
                     // error occured so display snackbar

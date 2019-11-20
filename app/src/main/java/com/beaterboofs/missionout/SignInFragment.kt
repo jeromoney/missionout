@@ -2,23 +2,19 @@ package com.beaterboofs.missionout
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.beaterboofs.missionout.Util.SharedPrefUtil
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -36,32 +32,20 @@ private const val ARG_PARAM2 = "param2"
 /**
  * A simple [Fragment] subclass.
  * Activities that contain this fragment must implement the
- * [SignInFragment.OnFragmentInteractionListener] interface
+ * [SignInFragment.OnLoginChangeListener] interface
  * to handle interaction events.
  * Use the [SignInFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
 class SignInFragment : Fragment(), View.OnClickListener {
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_SIGN_IN){
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                val account = task.getResult(ApiException::class.java)
-                firebaseAuthWithGoogle(account!!)
-            }
-            catch (e: ApiException){
-                Log.w(TAG, getString(R.string.failed_google_signin), e)
-            }
-        }
-    }
+
 
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private var listener: OnFragmentInteractionListener? = null
+    private var listener: OnLoginChangeListener? = null
     private val loginViewModel: LoginViewModel by activityViewModels()
 
     companion object {
@@ -78,13 +62,11 @@ class SignInFragment : Fragment(), View.OnClickListener {
             R.id.signInButton -> signIn()
             R.id.signOutButton -> signOut()
             R.id.disconnectButton -> revokeAccess()
-            R.id.getTokenButton -> getToken() //TODO - REMOVE IN PRODUCTION
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         // [START config_signin]
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -103,8 +85,21 @@ class SignInFragment : Fragment(), View.OnClickListener {
         // If app ever navigates to this fragment, that means we want to log out the user
         revokeAccess()
 
-    }
 
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_SIGN_IN){
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                firebaseAuthWithGoogle(account!!)
+            }
+            catch (e: ApiException){
+                Log.w(TAG, getString(R.string.failed_google_signin), e)
+            }
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -125,13 +120,13 @@ class SignInFragment : Fragment(), View.OnClickListener {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri) {
-        listener?.onFragmentInteraction(uri)
+    fun onLoginChanged(isLoggedIn: Boolean) {
+        listener?.onLoginChange(isLoggedIn)
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
+        if (context is OnLoginChangeListener) {
             listener = context
         } else {
             throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
@@ -143,7 +138,6 @@ class SignInFragment : Fragment(), View.OnClickListener {
         signInButton.setOnClickListener(this)
         signOutButton.setOnClickListener(this)
         disconnectButton.setOnClickListener(this)
-        getTokenButton.setOnClickListener(this)
 
     }
     override fun onDetach() {
@@ -162,9 +156,8 @@ class SignInFragment : Fragment(), View.OnClickListener {
      * (http://developer.android.com/training/basics/fragments/communicating.html)
      * for more information.
      */
-    interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
+    interface OnLoginChangeListener {
+        fun onLoginChange(isLoggedIn: Boolean)
     }
 
 
@@ -180,6 +173,9 @@ class SignInFragment : Fragment(), View.OnClickListener {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
+                    // tell mainactivity that login is sucessful
+                    onLoginChanged(true)
+
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
                     val firebaseUser  = auth.currentUser!!
@@ -235,6 +231,9 @@ class SignInFragment : Fragment(), View.OnClickListener {
     }
 
     private fun revokeAccess() {
+        // Tell mainactivity that user is logged out
+        onLoginChanged(false)
+
         // Firebase sign out
         auth.signOut()
 
@@ -259,24 +258,5 @@ class SignInFragment : Fragment(), View.OnClickListener {
             signInButton.visibility = View.VISIBLE
             signOutAndDisconnect.visibility = View.GONE
         }
-    }
-
-    //TODO - REMOVE IN PRODUCTION VERSION
-    fun getToken() {
-        FirebaseInstanceId.getInstance().instanceId
-            .addOnCompleteListener(OnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    Log.w(TAG, "getInstanceId failed", task.exception)
-                    return@OnCompleteListener
-                }
-
-                // Get new Instance ID token
-                val token = task.result?.token
-
-                // Log and toast
-                val msg = token.toString()
-                Log.d(TAG, msg)
-                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-            })
     }
 }

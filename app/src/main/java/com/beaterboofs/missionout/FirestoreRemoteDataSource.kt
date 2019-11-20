@@ -1,28 +1,28 @@
 package com.beaterboofs.missionout
 
-import android.content.Context
 import android.util.Log
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import androidx.navigation.fragment.NavHostFragment.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.beaterboofs.missionout.DataClass.Alarm
-import com.beaterboofs.missionout.Util.SharedPrefUtil
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 
-object FirestoreRemoteDataSource {
+class FirestoreRemoteDataSource {
     private val TAG = "FirestoreRemoteDataSource"
-    fun sendResponse(context: Context, response: String, docId: String) {
-        val db = Firebase.firestore
-        val teamDocId = SharedPrefUtil.getTeamDocId(context)
+    val db = Firebase.firestore
+
+
+    fun sendResponse(teamDocId: String, response: String, docId: String) {
         val path = "/teams/$teamDocId/missions/$docId"
         val docRef = db.document(path)
         val user = FirebaseAuth.getInstance().currentUser
@@ -30,10 +30,8 @@ object FirestoreRemoteDataSource {
         docRef.update("responseMap.${name}", response)
     }
 
-    suspend fun addMissionToDB(context: Context, missionInstance: Mission) : String? {
+    suspend fun addMissionToDB(teamDocId: String, missionInstance: Mission) : String? {
         // submit mission to firestore database
-        val db = Firebase.firestore
-        val teamDocId = SharedPrefUtil.getTeamDocId(context)
         try{
             val docRef = db.collection("/teams/$teamDocId/missions").add(missionInstance).await()
             return docRef.id
@@ -51,7 +49,6 @@ object FirestoreRemoteDataSource {
      * message addresses. The old token -- if exists --  is deleted from database
      */
     suspend fun addTokenToServer(userUID: String, token: String, oldToken: String?){
-        val db = Firebase.firestore
         try {
             val query = db.collection("users").whereEqualTo("userUID",userUID).limit(1).get().await()
             if (query.size() == 0){
@@ -71,7 +68,6 @@ object FirestoreRemoteDataSource {
     }
 
     fun getMissions(teamDocId : String, recyclerView : RecyclerView, fragment: Fragment){
-        val db = Firebase.firestore
         // Get missions within a certain timeframe
         val collectionPath = "/teams/${teamDocId}/missions"
         val query = db
@@ -102,9 +98,8 @@ object FirestoreRemoteDataSource {
     }
 
     fun addAlarmToDB(mission: Mission, teamDocId: String, docId: String) {
-        val db = FirebaseFirestore.getInstance()
         val alarm = Alarm(
-            description = mission!!.description,
+            description = mission.description,
             action = mission.needForAction,
             teamDocId = teamDocId,
             missionDocID = docId
@@ -119,4 +114,12 @@ object FirestoreRemoteDataSource {
                 // TODO - handle failure
             }
     }
+
+    fun getMissionLiveData(teamDocId: String, docID: String) : DocumentReference {
+        // Get missions within a certain timeframe
+        val path = "/teams/${teamDocId}/missions/${docID}"
+        val documentReference = db.document(path)
+        return documentReference
+    }
+
 }

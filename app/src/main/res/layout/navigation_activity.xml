@@ -19,13 +19,6 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
-            <ImageView
-                android:contentDescription="@string/profile_picture_of_user"
-                android:id="@+id/profile_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:src="@drawable/fui_ic_anonymous_white_24dp" />
             <TextView
                 android:id="@+id/profile_textview"
                 android:layout_width="wrap_content"
@@ -37,6 +30,7 @@
                 android:id="@+id/menu_sign_out"
                 android:text="@string/sign_out"/>
         </androidx.appcompat.widget.Toolbar>
+
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/navHostFragment"

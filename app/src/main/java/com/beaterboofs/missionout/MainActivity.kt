@@ -3,16 +3,15 @@ package com.beaterboofs.missionout
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.NavHostFragment
 import kotlinx.android.synthetic.main.navigation_activity.*
 
 
 class MainActivity : AppCompatActivity(),
-    SignInFragment.OnFragmentInteractionListener,
+    SignInFragment.OnLoginChangeListener,
     OverviewFragment.OnFragmentInteractionListener{
 
     lateinit var loginViewModel: LoginViewModel
@@ -20,6 +19,8 @@ class MainActivity : AppCompatActivity(),
     override fun onFragmentInteraction(uri: Uri) {
         //TODO -- enable interaction listener
     }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,13 +34,21 @@ class MainActivity : AppCompatActivity(),
             })
         }
 
-
         val host: NavHostFragment = supportFragmentManager
             .findFragmentById(R.id.navHostFragment) as NavHostFragment? ?: return
 
         val navController = host.navController
         menu_sign_out.setOnClickListener {
             navController.navigate(R.id.signInFragment)
+        }
+    }
+
+    override fun onLoginChange(isLoggedIn: Boolean) {
+        if (isLoggedIn){
+            toolbar.visibility = View.VISIBLE
+        }
+        else{
+            toolbar.visibility = View.INVISIBLE
         }
     }
 
