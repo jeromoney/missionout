@@ -29,7 +29,7 @@ class DetailViewModel: ViewModel() {
             // Remove the old listener
             registration!!.remove()
         }
-        registration = firebaseRepository.getMissionLiveData(teamDocId, docID).addSnapshotListener(EventListener<DocumentSnapshot> { value, error ->
+        registration = firebaseRepository.fetchMission(teamDocId, docID).addSnapshotListener(EventListener<DocumentSnapshot> { value, error ->
             if (error != null) {
                 Log.w(TAG, "Listen failed.", error)
                 mission.value = null

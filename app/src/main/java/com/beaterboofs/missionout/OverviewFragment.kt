@@ -33,29 +33,38 @@ class OverviewFragment : Fragment() {
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var dataset : List<Mission>
     private val loginViewModel: LoginViewModel by activityViewModels()
-
-
-
+    private val overviewViewModel: OverviewViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // Set up main missions view model
+        overviewViewModel.apply {
+            teamDocID = loginViewModel.teamDocID.value!!
+            missions.observe(viewLifecycleOwner, Observer { missions ->
+                // update recycler view
+                viewAdapter = MissionAdapter(missions, { missionInstance : Mission -> missionItemClicked(missionInstance.docId!!) })
+                recyclerView = view!!.findViewById<RecyclerView>(R.id.overview_recycler_view).apply {
+                    setHasFixedSize(true)
+                    layoutManager = viewManager
+                    adapter = viewAdapter
+                }
+            })
+        }
 
         // Set up listener so create mission button only shows to editors
         loginViewModel.editor.observe(viewLifecycleOwner, Observer { isEditor ->
             if (isEditor){
-                // show fab
-                // Floating action bar with create should only be shown to editors
-                fab.show()
-                // Create a new mission
+                // Floating action button with create should only be shown to editors
+                fab.visibility = View.VISIBLE
                 fab.setOnClickListener {
                     findNavController().navigate(R.id.createFragment)
                 }
             }
             else{
-                fab.hide()
+                fab.visibility = View.GONE
             }
         })
 
@@ -63,12 +72,10 @@ class OverviewFragment : Fragment() {
             if (teamDocID == null){
                 return@Observer
             }
-            FirestoreRemoteDataSource().getMissions(loginViewModel.teamDocID.value!!, recyclerView, this)
         })
 
         dataset = listOf()
         viewManager = LinearLayoutManager(context)
-        viewAdapter = MissionAdapter(dataset, { missionInstance : Mission -> missionItemClicked(missionInstance.docId!!) })
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.overview_fragment, container, false)
     }
@@ -76,11 +83,9 @@ class OverviewFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-            recyclerView = view.findViewById<RecyclerView>(R.id.overview_recycler_view).apply {
-                setHasFixedSize(true)
-                layoutManager = viewManager
-                adapter = viewAdapter
-            }
+        overviewViewModel.updateModel()
+
+
 
 
 

@@ -1,5 +1,7 @@
 package com.beaterboofs.missionout
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -33,8 +35,6 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
     private lateinit var docIdVal : String
     private val args: DetailFragmentArgs by navArgs()
     private lateinit var binding: FragmentDetailBinding
-    private var checkedChipID : Int = -1
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,11 +56,17 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
                 val displayName = loginViewModel.user.value!!.displayName
                 val response = mission.responseMap?.getOrDefault(displayName, null) ?: return@Observer
                 for (i in 0 until response_chip_group.size){
-                    val chip = response_chip_group.get(i) as Chip
+                    val chip = response_chip_group[i] as Chip
                     if (chip.text == response){
-                        checkedChipID = chip.id
-                        response_chip_group.check(checkedChipID)
+                        response_chip_group.check(chip.id)
                     }
+                }
+                // check if lat/lon is given and set visibility of map icon accordingly
+                if (mission.location == null){
+                    map_icon.visibility = View.GONE
+                }
+                else{
+                    map_icon.visibility = View.VISIBLE
                 }
             })
         }
@@ -68,10 +74,10 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
         loginViewModel.editor.observe(viewLifecycleOwner, Observer { isEditor ->
             if (isEditor){
                 // Floating action bar with alarm should only be shown to editors
-                    alarm_fab.show()
+                    alarm_fab.visibility = View.VISIBLE
             }
             else {
-                alarm_fab.hide()
+                alarm_fab.visibility = View.GONE
             }
         })
         return binding.root
@@ -80,15 +86,21 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         response_chip_group.setOnCheckedChangeListener { group, checkedId ->
-            if (checkedChipID == checkedId){
+            if (checkedId == -1){
+            // User just deselected a button so remove response
+            FirestoreRemoteDataSource().deleteResponse(loginViewModel.teamDocID.value!!, docIdVal)
+            return@setOnCheckedChangeListener
+            }
+            // Check if we entered this state by an automatic selection of viewmodel. This is detected
+            // by observing the state of the chip group matches firestore database records
+            val displayName = loginViewModel.user.value!!.displayName
+            val vmResponse = detailViewModel.mission.value?.responseMap?.getOrDefault(displayName, null)
+            val chipResponse = activity!!.findViewById<Chip>(checkedId).text
+            if (vmResponse == chipResponse){
                 // Entered this state when the viewmodel changed, and no actual human interaction
                 return@setOnCheckedChangeListener
             }
-            else if (checkedId == -1){
-                // User just deselected a button so remove response
-                FirestoreRemoteDataSource().removeResponse(loginViewModel.teamDocID.value!!, docIdVal)
-                return@setOnCheckedChangeListener
-            }
+
             val response = group.findViewById<Chip>(checkedId).text.toString()
             val teamDocID = loginViewModel.teamDocID.value!!
             FirestoreRemoteDataSource().sendResponse(teamDocID,response,docIdVal)
@@ -96,13 +108,12 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
 
 
         // enable click on geopoint to external uri
-//        location_text_view.setOnClickListener {
-//            val geoPoint = detailViewModel.mission.value!!.location!!
-//            val gmmIntentUri = Uri.parse("geo:0,0?z=5&q=${geoPoint.latitude},${geoPoint.longitude}")
-//            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-//            startActivity(mapIntent)
-//        }
-
+        map_icon.setOnClickListener {
+            val geoPoint = detailViewModel.mission.value!!.location!!
+            val gmmIntentUri = Uri.parse("geo:0,0?z=5&q=${geoPoint.latitude},${geoPoint.longitude}")
+            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+            startActivity(mapIntent)
+        }
 
         // set up raise alarm
         alarm_fab.setOnClickListener {
@@ -111,7 +122,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
             // TODO - Add a confirmation screen to prevent butt dials
             val mission = binding.missionInstance!!
             val teamDocId = loginViewModel.teamDocID.value!!
-            FirestoreRemoteDataSource().addAlarmToDB(mission, teamDocId, docIdVal)
+            FirestoreRemoteDataSource().putAlarm(mission, teamDocId, docIdVal)
         }
 
     }

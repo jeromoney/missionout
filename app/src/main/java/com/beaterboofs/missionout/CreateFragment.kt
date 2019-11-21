@@ -80,7 +80,7 @@ class CreateMissionFragment : Fragment() {
             val missionInstance = getMissionFromText()
             CoroutineScope(Dispatchers.Main).launch {
                 val teamDocID = loginViewModel.teamDocID.value!!
-                val docID = FirestoreRemoteDataSource().addMissionToDB(teamDocID, missionInstance)
+                val docID = FirestoreRemoteDataSource().putMission(teamDocID, missionInstance)
                 //Stop spinner
                 if (docID != null) {
                     val action = MobileNavigationDirections.actionGlobalDetailFragment(docID)

@@ -100,7 +100,7 @@ class MissionFirebaseMessagingService : FirebaseMessagingService() {
         setToken(applicationContext, token)
         val userUID = FirebaseAuth.getInstance().uid ?: return
         GlobalScope.launch {
-            FirestoreRemoteDataSource().addTokenToServer(userUID, token, oldToken)
+            FirestoreRemoteDataSource().putToken(userUID, token, oldToken)
         }
     }
 }
