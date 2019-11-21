@@ -122,4 +122,16 @@ class FirestoreRemoteDataSource {
         return documentReference
     }
 
+    fun removeResponse(teamDocId: String, docId: String) {
+        // removes a response from the mission
+        val path = "/teams/$teamDocId/missions/$docId"
+        val docRef = db.document(path)
+        val user = FirebaseAuth.getInstance().currentUser
+        val name = user!!.displayName
+        val updates = hashMapOf<String, Any>(
+            "responseMap.${name}" to FieldValue.delete()
+        )
+        docRef.update(updates)
+    }
+
 }

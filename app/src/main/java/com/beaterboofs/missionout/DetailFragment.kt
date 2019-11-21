@@ -1,14 +1,11 @@
 package com.beaterboofs.missionout
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.core.view.get
 import androidx.core.view.size
@@ -57,7 +54,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
                 binding.missionInstance = mission
                 // see if user RSVPed to mission. Set that chip as checked
                 val displayName = loginViewModel.user.value!!.displayName
-                val response = mission.responseMap?.get(displayName) ?: return@Observer
+                val response = mission.responseMap?.getOrDefault(displayName, null) ?: return@Observer
                 for (i in 0 until response_chip_group.size){
                     val chip = response_chip_group.get(i) as Chip
                     if (chip.text == response){
@@ -83,8 +80,13 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         response_chip_group.setOnCheckedChangeListener { group, checkedId ->
-            if (checkedId == -1 || checkedChipID == checkedId){
-                // User clicked on the same option twice
+            if (checkedChipID == checkedId){
+                // Entered this state when the viewmodel changed, and no actual human interaction
+                return@setOnCheckedChangeListener
+            }
+            else if (checkedId == -1){
+                // User just deselected a button so remove response
+                FirestoreRemoteDataSource().removeResponse(loginViewModel.teamDocID.value!!, docIdVal)
                 return@setOnCheckedChangeListener
             }
             val response = group.findViewById<Chip>(checkedId).text.toString()
