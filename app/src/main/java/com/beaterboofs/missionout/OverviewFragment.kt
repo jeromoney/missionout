@@ -35,6 +35,8 @@ class OverviewFragment : Fragment() {
     private lateinit var dataset : List<Mission>
     private val loginViewModel: LoginViewModel by activityViewModels()
     private val overviewViewModel: OverviewViewModel by activityViewModels()
+    private var listener: OnFragmentInteractionListener? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -90,29 +92,12 @@ class OverviewFragment : Fragment() {
 
         // If user is not logged in, navigate to login screen
         val navController = findNavController()
-        viewModel.authenticationState.observe(viewLifecycleOwner, Observer { authenticationState ->
+        loginViewModel.authenticationState.observe(viewLifecycleOwner, Observer { authenticationState ->
             if (authenticationState == LoginViewModel.AuthenticationState.UNAUTHENTICATED) {
                 navController.navigate(R.id.signInFragment)
             }
         } )
     }
-
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-    private var listener: OnFragmentInteractionListener? = null
-    private val viewModel: LoginViewModel by activityViewModels()
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-
-    }
-
 
     // TODO: Rename method, update argument and hook method into UI event
     fun onButtonPressed(uri: Uri) {
@@ -147,26 +132,6 @@ class OverviewFragment : Fragment() {
     interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         fun onFragmentInteraction(uri: Uri)
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment OverviewFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            OverviewFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 
     private fun missionItemClicked(missionDocID: String){

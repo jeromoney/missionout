@@ -40,10 +40,8 @@ class LoginViewModel : ViewModel() {
     }
 
     fun authenticate(username: String, password: String){
-        // TODO - authenticate user
         authenticationState.value = AuthenticationState.AUTHENTICATED
     }
-
 
     fun updateClaims() {
         FirebaseAuth.getInstance().currentUser!!.getIdToken(true).addOnSuccessListener { result -> // TODO - convert to coroutine

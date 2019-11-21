@@ -28,128 +28,121 @@
             tools:text="The bridge concludes with a low B note which clocks in somewhere around 25Hz—not the lowest note in the universe, but pretty durn close. I've long used it as one of my tests for LF accuracy, especially in subwoofers. A good subwoofer will resolve the note, give it dimension, maybe even rumble your room. "
             />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/alarm_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/fab_margin"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@android:drawable/ic_lock_idle_alarm" />
-
 
         <com.google.android.material.card.MaterialCardView
             android:theme="@style/Theme.MaterialComponents.Light"
             android:id="@+id/detail_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/cardview_default_radius"
+            android:layout_margin="3dp"
             app:cardCornerRadius="3dp"
             app:cardElevation="2dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                >
-
+                android:layout_marginBottom="16dp">
                 <TextView
                     android:id="@+id/detail_header_text"
-                    style="@style/TextAppearance.MaterialComponents.Headline5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="24dp"
-                    android:firstBaselineToTopHeight="44dp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    style="@style/card_header_text"
                     tools:text="Lost hiker on Mt Yale"
                     android:text="@{missionInstance.description}"/>
                 <TextView
-                    style="@style/TextAppearance.MaterialComponents.Caption"
+                    style="@style/card_time_text"
                     android:id="@+id/detail_time_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="16dp"
-                    android:firstBaselineToTopHeight="68dp"
+                    app:layout_constraintTop_toBottomOf="@id/detail_header_text"
                     tools:text="November 11 11am"
                     android:text="@{missionInstance.time.toDate().toString()}"/>
                 <TextView
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    style="@style/card_secondary_text"
                     android:id="@+id/detail_location_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="16dp"
-                    android:firstBaselineToTopHeight="100dp"
+                    app:layout_constraintTop_toBottomOf="@id/detail_time_text"
                     tools:text="Squaw Creek"
                     android:text="@{missionInstance.locationDescription}"/>
                 <TextView
-                    style="@style/TextAppearance.MaterialComponents.Body2"
+                    style="@style/card_supporting_text"
                     android:id="@+id/detail_description_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="16dp"
-                    android:firstBaselineToTopHeight="126dp"
+                    app:layout_constraintTop_toBottomOf="@id/detail_location_text"
                     tools:text="We need hikers and snowshoers."
                     android:text="@{missionInstance.needForAction}"/>
+
                 <View
                     android:id="@+id/divider"
-                    app:layout_constraintTop_toBottomOf="@id/detail_description_text"
-                    android:paddingTop="24dp"
-                    android:paddingRight="16dp"
-                    android:paddingLeft="16dp"
+                    style="@style/card_divider"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="?android:attr/listDivider" />
-                <TextView
-                    style="@style/TextAppearance.MaterialComponents.Body2"
-                    android:id="@+id/detail_response_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:background="?android:attr/listDivider"
                     android:paddingLeft="16dp"
-                    android:firstBaselineToTopHeight="155dp"
+                    android:paddingRight="16dp"
+                    app:layout_constraintTop_toBottomOf="@id/detail_description_text" />
+                <TextView
+                    style="@style/card_subtitle_text"
+                    android:id="@+id/detail_response_text"
+                    app:layout_constraintTop_toBottomOf="@id/divider"
                     android:text="@string/response"/>
-                <HorizontalScrollView
-                    android:id="@+id/chip_group_slider"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/detail_response_text"
-                    android:paddingLeft="16dp">
+
                     <com.google.android.material.chip.ChipGroup
+                        style="@style/material_card_text"
                         android:id="@+id/response_chip_group"
-                        android:layout_width="match_parent"
+                        app:layout_constraintTop_toBottomOf="@id/detail_response_text"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:singleLine="true"
-                        app:singleSelection="true"
+                        android:layout_marginTop="14dp"
                         app:chipSpacing="8dp"
-                        >
+                        app:singleSelection="true">
 
                         <com.google.android.material.chip.Chip
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
                             android:id="@+id/responding_chip"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Responding"/>
+                            android:text="Responding" />
+
                         <com.google.android.material.chip.Chip
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
                             android:id="@+id/delayed_chip"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Delayed"/>
+                            android:text="Delayed" />
+
                         <com.google.android.material.chip.Chip
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
                             android:id="@+id/standby_chip"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                        android:text="Standby"/>
-                        <com.google.android.material.chip.Chip
                             style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:id="@+id/unavailable_chip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Unavailable"/>
+                            android:text="Standby" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/unavailable_chip"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Unavailable" />
                     </com.google.android.material.chip.ChipGroup>
-                </HorizontalScrollView>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/alert_text_button"
+                    android:paddingLeft="16dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:paddingBottom="8dp"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/page_team"/>
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/edit_text_button"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="8dp"
+                    app:layout_constraintLeft_toRightOf="@id/alert_text_button"
+                    app:layout_constraintBaseline_toBaselineOf="@id/alert_text_button"
+                    android:text="@string/edit"/>
+
+
 
                 <ImageButton
                     android:id="@+id/map_icon"
@@ -157,10 +150,12 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="20dp"
                     android:paddingBottom="16dp"
-                    android:paddingRight="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/chip_group_slider"
+                    android:paddingEnd="16dp"
+                    app:layout_constraintTop_toBottomOf="@id/response_chip_group"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:srcCompat="@drawable/twotone_map_black_36" />
+                    app:srcCompat="@drawable/twotone_map_black_36"
+                    android:background="@null"
+                    />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 

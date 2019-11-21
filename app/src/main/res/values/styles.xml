@@ -46,4 +46,53 @@
         <item name="android:textSize">36sp</item>
     </style>
 
+    <!-- Material Card Contents-->
+    <style name="material_card_text">
+        <item name="android:fontFamily">Roboto</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="card_header_text" parent="material_card_text">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">#de000000</item>
+        <item name="firstBaselineToTopHeight">44dp</item>
+    </style>
+    <style name="card_time_text" parent="material_card_text">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#8a000000</item>
+        <item name="firstBaselineToTopHeight">24dp</item>
+    </style>
+    <style name="card_secondary_text" parent="material_card_text">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#de000000</item>
+        <item name="firstBaselineToTopHeight">32dp</item>
+    </style>
+    <style name="card_supporting_text" parent="material_card_text">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#99000000</item>
+        <item name="firstBaselineToTopHeight">26dp</item>
+    </style>
+    <style name="card_divider"  parent="material_card_text">
+        <item name="android:paddingTop">24dp</item>
+    </style>
+    <style name="card_subtitle_text" parent="material_card_text">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#de000000</item>
+        <item name="firstBaselineToTopHeight">36dp</item>
+    </style>
+    <style name="card_chipgroup"  parent="material_card_text">
+        <item name="android:paddingTop">14dp</item>
+    </style>
+
+    <style name="card_chip_text" parent="material_card_text">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#de000000</item>
+    </style>
+    <style name="card_actions_text" parent="material_card_text">
+        <item name="android:textSize">14sp</item>
+        <item name="android:color">#ee6200</item>
+        <item name="android:paddingTop">20dp</item>
+    </style>
+
 </resources>

@@ -24,18 +24,22 @@ import kotlinx.android.synthetic.main.fragment_detail.*
 
 class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
 
+
+    private val detailViewModel: DetailViewModel by activityViewModels()
+    private val loginViewModel: LoginViewModel by activityViewModels()
+    private lateinit var docIdVal : String
+    private val args: DetailFragmentArgs by navArgs()
+    private lateinit var binding: FragmentDetailBinding
+
+    companion object{
+        private val TAG = "DetailFragment"
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         docIdVal = args.docID
         detailViewModel.updateModel()
     }
-    private val detailViewModel: DetailViewModel by activityViewModels()
-    private val loginViewModel: LoginViewModel by activityViewModels()
-
-    private val TAG = "DetailFragment"
-    private lateinit var docIdVal : String
-    private val args: DetailFragmentArgs by navArgs()
-    private lateinit var binding: FragmentDetailBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,6 +57,9 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
 
             mission.observe(viewLifecycleOwner, Observer { mission->
                 binding.missionInstance = mission
+                if (mission == null){
+                    return@Observer
+                }
                 // see if user RSVPed to mission. Set that chip as checked
                 val displayName = loginViewModel.user.value!!.displayName
                 val response = mission.responseMap?.getOrDefault(displayName, null) ?: return@Observer
@@ -69,7 +76,9 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
 
         loginViewModel.editor.observe(viewLifecycleOwner, Observer { isEditor ->
             // Floating action bar with alarm should only be shown to editors
-            alarm_fab.visibility = getVisibility(isEditor)
+            edit_text_button.visibility = getVisibility(isEditor)
+            alert_text_button.visibility = getVisibility(isEditor)
+
         })
         return binding.root
     }
@@ -107,7 +116,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
         }
 
         // set up raise alarm
-        alarm_fab.setOnClickListener {
+        alert_text_button.setOnClickListener {
             // People with editor status (TODO - add check in database) create a document in the
             // "alarms" collection. Google Cloud Function will then run send out the alarm.
             // TODO - Add a confirmation screen to prevent butt dials

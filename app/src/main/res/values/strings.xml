@@ -216,4 +216,6 @@
     <string name="failed_google_signin">Google sign in failed</string>
     <string name="profile_picture_of_user">Profile picture of user</string>
     <string name="response">Response</string>
+    <string name="page_team">Page Team</string>
+    <string name="edit">Edit</string>
 </resources>
