@@ -70,28 +70,12 @@ class FirestoreRemoteDataSource {
 
     fun fetchMissions(teamDocID : String) : Query {
         // Gets the last 5 missions
-        // TODO - refactor so recycler view is held in fragment
         val collectionPath = "/teams/${teamDocID}/missions"
-
         val query = db
             .collection(collectionPath)
             .orderBy("time", Query.Direction.DESCENDING)
             .limit(5)
-
         return query
-
-//        query.addOnSuccessListener {snapshots->
-//            val missionList = snapshots.toObjects<Mission>()
-//            // I need to pass doc id to mission. probably a better way to do this
-//            for (i in 0 until snapshots.size())
-//            {
-//                val docId = snapshots.documents[i].id
-//                missionList[i].docId = docId
-//            }
-//            recyclerView.adapter = MissionAdapter(missionList,{ missionInstance : Mission -> missionItemClicked(
-//                missionInstance.docId!!, fragment
-//            ) })
-//        }
     }
 
 

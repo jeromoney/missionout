@@ -45,7 +45,7 @@ class OverviewFragment : Fragment() {
             teamDocID = loginViewModel.teamDocID.value!!
             missions.observe(viewLifecycleOwner, Observer { missions ->
                 // update recycler view
-                viewAdapter = MissionAdapter(missions, { missionInstance : Mission -> missionItemClicked(missionInstance.docId!!) })
+                viewAdapter = MissionAdapter(missions, { missionInstance : Mission -> missionItemClicked(missionInstance.key!!) })
                 recyclerView = view!!.findViewById<RecyclerView>(R.id.overview_recycler_view).apply {
                     setHasFixedSize(true)
                     layoutManager = viewManager

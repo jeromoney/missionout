@@ -132,6 +132,7 @@ class CreateMissionFragment : Fragment() {
         }
 
         return Mission(
+            key = null,
             description = description,
             location = geopoint,
             locationDescription = locationDescription,
