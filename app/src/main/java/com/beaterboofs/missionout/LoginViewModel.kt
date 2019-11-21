@@ -30,7 +30,6 @@ class LoginViewModel : ViewModel() {
             else {
                 value = AuthenticationState.AUTHENTICATED
                 user.value = auth.currentUser
-                teamDocID.value = "raux5KIhuIL84bBmPSPs" // TODO - remove hard code
                 updateClaims()
             }
         }

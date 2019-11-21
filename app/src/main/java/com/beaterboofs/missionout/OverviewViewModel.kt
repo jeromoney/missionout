@@ -20,6 +20,10 @@ class OverviewViewModel() : ViewModel() {
     fun updateModel() {
         // Remove old registration if it exists
         registration?.remove()
+        if (!::teamDocID.isInitialized){
+            return
+        }
+
         registration = firebaseRepository.fetchMissions(teamDocID)
             .addSnapshotListener{value, error ->
                 if (error != null){

@@ -35,9 +35,7 @@ class DetailViewModel: ViewModel() {
                 mission.value = null
                 return@EventListener
             }
-            val missionFromDB = value?.toObject<Mission>()?.apply {
-                docId = this@DetailViewModel.docID
-            }
+            val missionFromDB = value?.toObject<Mission>()
             mission.value = missionFromDB
         }
         )

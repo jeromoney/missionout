@@ -113,10 +113,6 @@ class CreateMissionFragment : Fragment() {
         imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
     }
 
-
-
-
-
     private fun getMissionFromText(): Mission {
         val description = mission_description_edit_text_val.text.toString()
         val needForAction = need_for_action_edit_text_val.text.toString()
@@ -137,7 +133,6 @@ class CreateMissionFragment : Fragment() {
             location = geopoint,
             locationDescription = locationDescription,
             needForAction = needForAction,
-            docId = null,
             responseMap = null
         )
     }

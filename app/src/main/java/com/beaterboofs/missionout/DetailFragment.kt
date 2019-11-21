@@ -15,6 +15,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
+import com.beaterboofs.missionout.Util.UIUtil.getVisibility
 import com.beaterboofs.missionout.databinding.FragmentDetailBinding
 import com.google.android.material.chip.Chip
 
@@ -62,23 +63,13 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
                     }
                 }
                 // check if lat/lon is given and set visibility of map icon accordingly
-                if (mission.location == null){
-                    map_icon.visibility = View.GONE
-                }
-                else{
-                    map_icon.visibility = View.VISIBLE
-                }
+                map_icon.visibility = getVisibility(mission.location != null)
             })
         }
 
         loginViewModel.editor.observe(viewLifecycleOwner, Observer { isEditor ->
-            if (isEditor){
-                // Floating action bar with alarm should only be shown to editors
-                    alarm_fab.visibility = View.VISIBLE
-            }
-            else {
-                alarm_fab.visibility = View.GONE
-            }
+            // Floating action bar with alarm should only be shown to editors
+            alarm_fab.visibility = getVisibility(isEditor)
         })
         return binding.root
     }

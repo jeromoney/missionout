@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.beaterboofs.missionout.Util.UIUtil.getVisibility
 import kotlinx.android.synthetic.main.overview_fragment.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -40,38 +41,41 @@ class OverviewFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Set up main missions view model
-        overviewViewModel.apply {
-            teamDocID = loginViewModel.teamDocID.value!!
-            missions.observe(viewLifecycleOwner, Observer { missions ->
-                // update recycler view
-                viewAdapter = MissionAdapter(missions, { missionInstance : Mission -> missionItemClicked(missionInstance.key!!) })
-                recyclerView = view!!.findViewById<RecyclerView>(R.id.overview_recycler_view).apply {
-                    setHasFixedSize(true)
-                    layoutManager = viewManager
-                    adapter = viewAdapter
-                }
-            })
-        }
+
 
         // Set up listener so create mission button only shows to editors
         loginViewModel.editor.observe(viewLifecycleOwner, Observer { isEditor ->
-            if (isEditor){
-                // Floating action button with create should only be shown to editors
-                fab.visibility = View.VISIBLE
-                fab.setOnClickListener {
-                    findNavController().navigate(R.id.createFragment)
-                }
-            }
-            else{
-                fab.visibility = View.GONE
+            // Floating action button with create should only be shown to editors
+            fab.visibility = getVisibility(isEditor)
+            fab?.setOnClickListener {
+                findNavController().navigate(R.id.createFragment)
             }
         })
 
-        loginViewModel.teamDocID.observe(viewLifecycleOwner, Observer { teamDocID ->
-            if (teamDocID == null){
+
+
+        loginViewModel.teamDocID.observe(viewLifecycleOwner, Observer { loginTeamDocID ->
+            if (loginTeamDocID == null){
                 return@Observer
             }
+            // Only run OverviewViewModel when the TeamDocId has been established
+            // Set up main missions view model
+            overviewViewModel.apply {
+                teamDocID = loginTeamDocID
+                missions.observe(viewLifecycleOwner, Observer { missions ->
+                    if (missions == null){
+                        return@Observer
+                    }
+                    // update recycler view
+                    viewAdapter = MissionAdapter(missions, { missionInstance : Mission -> missionItemClicked(missionInstance.key!!) })
+                    recyclerView = view!!.findViewById<RecyclerView>(R.id.overview_recycler_view).apply {
+                        setHasFixedSize(true)
+                        layoutManager = viewManager
+                        adapter = viewAdapter
+                    }
+                })
+            }
+            overviewViewModel.updateModel()
         })
 
         dataset = listOf()
@@ -80,16 +84,9 @@ class OverviewFragment : Fragment() {
         return inflater.inflate(R.layout.overview_fragment, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         overviewViewModel.updateModel()
-
-
-
-
-
-
 
         // If user is not logged in, navigate to login screen
         val navController = findNavController()
