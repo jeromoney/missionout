@@ -1,5 +1,6 @@
 package com.beaterboofs.missionout
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -18,6 +19,7 @@ import androidx.navigation.fragment.navArgs
 import com.beaterboofs.missionout.Util.UIUtil.getVisibility
 import com.beaterboofs.missionout.databinding.FragmentDetailBinding
 import com.google.android.material.chip.Chip
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 import kotlinx.android.synthetic.main.fragment_detail.*
 
@@ -119,10 +121,16 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
         alert_text_button.setOnClickListener {
             // People with editor status (TODO - add check in database) create a document in the
             // "alarms" collection. Google Cloud Function will then run send out the alarm.
-            // TODO - Add a confirmation screen to prevent butt dials
-            val mission = binding.missionInstance!!
-            val teamDocId = loginViewModel.teamDocID.value!!
-            FirestoreRemoteDataSource().putAlarm(mission, teamDocId, docIdVal)
+            MaterialAlertDialogBuilder(context, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Centered)
+                .setTitle("Page the team?")
+                .setMessage("This page will be sent out to the entire team.")
+                .setPositiveButton("Ok", DialogInterface.OnClickListener { _, _ ->
+                    val mission = binding.missionInstance!!
+                    val teamDocId = loginViewModel.teamDocID.value!!
+                    FirestoreRemoteDataSource().putAlarm(mission, teamDocId, docIdVal)
+                })
+                .show()
+
         }
 
     }
