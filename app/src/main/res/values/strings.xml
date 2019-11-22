@@ -218,4 +218,7 @@
     <string name="response">Response</string>
     <string name="page_team">Page Team</string>
     <string name="edit">Edit</string>
+    <string name="page_the_team">Page the team?</string>
+    <string name="page_message">This page will be sent out to the entire team.</string>
+    <string name="ok">Ok</string>
 </resources>

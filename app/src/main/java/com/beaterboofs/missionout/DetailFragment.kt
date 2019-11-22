@@ -119,12 +119,12 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
             // People with editor status (TODO - add check in database) create a document in the
             // "alarms" collection. Google Cloud Function will then run send out the alarm.
             MaterialAlertDialogBuilder(context, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Centered)
-                .setTitle("Page the team?")
-                .setMessage("This page will be sent out to the entire team.")
-                .setPositiveButton("Ok", DialogInterface.OnClickListener { _, _ ->
+                .setTitle(getString(R.string.page_the_team))
+                .setMessage(getString(R.string.page_message))
+                .setPositiveButton(getString(R.string.ok)) { _, _ ->
                     val mission = binding.missionInstance!!
                     FirestoreRemoteDataSource().putAlarm(mission, pathVal)
-                })
+                }
                 .show()
 
         }

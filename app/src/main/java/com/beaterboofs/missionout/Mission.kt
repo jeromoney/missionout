@@ -8,13 +8,13 @@ import com.google.firebase.firestore.ServerTimestamp
 import kotlin.collections.HashMap
 
 data class Mission(
-    @DocumentId var key: String?,
+    @DocumentId var key: String?= null,
     @PropertyName("description") var description: String,
     @ServerTimestamp var  time: Timestamp? = null,
-    @PropertyName("location")  var location: GeoPoint?,
-    @PropertyName("needForAction") var needForAction: String?,
-    @PropertyName("locationDescription") var locationDescription: String?,
-    @PropertyName("responseMap") var responseMap: HashMap<String,String>?,
-    var path: String?) {
-    constructor() : this(null,"" , null, null, null, null, null, null)
+    @PropertyName("location")  var location: GeoPoint?= null,
+    @PropertyName("needForAction") var needForAction: String?= null,
+    @PropertyName("locationDescription") var locationDescription: String?= null,
+    @PropertyName("responseMap") var responseMap: HashMap<String,String>?= null,
+    var path: String?= null) {
+    constructor() : this(description = "" )
 }

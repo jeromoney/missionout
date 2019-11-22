@@ -116,13 +116,10 @@ class CreateMissionFragment : Fragment() {
         }
 
         return Mission(
-            key = null,
             description = description,
             location = geopoint,
             locationDescription = locationDescription,
-            needForAction = needForAction,
-            responseMap = null,
-            path = null
+            needForAction = needForAction
         )
     }
 

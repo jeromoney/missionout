@@ -27,7 +27,7 @@ class FirestoreRemoteDataSource {
         // submit mission to firestore database
         try{
             val docRef = db.collection("/teams/$teamDocId/missions").add(missionInstance).await()
-            return docRef.id
+            return docRef.path
         }
         catch (e: FirebaseException){
             // Display error to user
