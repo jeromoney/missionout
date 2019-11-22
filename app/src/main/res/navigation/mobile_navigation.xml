@@ -39,16 +39,16 @@
         android:label="DetailFragment" >
         <deepLink
             android:id="@+id/detailDeepLink"
-            app:uri="missionout://www.beaterboofs.com/{docID}" />
+            app:uri="missionout://www.beaterboofs.com/{path}" />
         <argument
-            android:name="docID"
+            android:name="path"
             app:argType="string" />
     </fragment>
     <action
         android:id="@+id/action_global_detailFragment"
         app:destination="@id/detailFragment">
         <argument
-            android:name="docID"
+            android:name="path"
             app:argType="string" />
     </action>
 

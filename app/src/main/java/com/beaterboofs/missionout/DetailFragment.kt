@@ -29,7 +29,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
 
     private val detailViewModel: DetailViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels()
-    private lateinit var docIdVal : String
+    private lateinit var pathVal : String
     private val args: DetailFragmentArgs by navArgs()
     private lateinit var binding: FragmentDetailBinding
 
@@ -39,7 +39,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        docIdVal = args.docID
+        pathVal = args.path
         detailViewModel.updateModel()
     }
 
@@ -54,9 +54,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
             false
         )
         detailViewModel.apply {
-            docID = args.docID
-            teamDocId = loginViewModel.teamDocID.value!!
-
+            path = args.path
             mission.observe(viewLifecycleOwner, Observer { mission->
                 binding.missionInstance = mission
                 if (mission == null){
@@ -90,7 +88,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
         response_chip_group.setOnCheckedChangeListener { group, checkedId ->
             if (checkedId == -1){
             // User just deselected a button so remove response
-            FirestoreRemoteDataSource().deleteResponse(loginViewModel.teamDocID.value!!, docIdVal)
+            FirestoreRemoteDataSource().deleteResponse(pathVal)
             return@setOnCheckedChangeListener
             }
             // Check if we entered this state by an automatic selection of viewmodel. This is detected
@@ -104,8 +102,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
             }
 
             val response = group.findViewById<Chip>(checkedId).text.toString()
-            val teamDocID = loginViewModel.teamDocID.value!!
-            FirestoreRemoteDataSource().sendResponse(teamDocID,response,docIdVal)
+            FirestoreRemoteDataSource().sendResponse(pathVal,response)
         }
 
 
@@ -126,8 +123,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
                 .setMessage("This page will be sent out to the entire team.")
                 .setPositiveButton("Ok", DialogInterface.OnClickListener { _, _ ->
                     val mission = binding.missionInstance!!
-                    val teamDocId = loginViewModel.teamDocID.value!!
-                    FirestoreRemoteDataSource().putAlarm(mission, teamDocId, docIdVal)
+                    FirestoreRemoteDataSource().putAlarm(mission, pathVal)
                 })
                 .show()
 
@@ -145,7 +141,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
             return
         }
         val response = (view as TextView).text as String
-        FirestoreRemoteDataSource().sendResponse(loginViewModel.teamDocID.value!!, response, detailViewModel.docID)
+        FirestoreRemoteDataSource().sendResponse(pathVal, response)
     }
 
 }

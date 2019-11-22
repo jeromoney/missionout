@@ -16,8 +16,7 @@ class FirestoreRemoteDataSource {
     val db = Firebase.firestore
 
 
-    fun sendResponse(teamDocId: String, response: String, docId: String) {
-        val path = "/teams/$teamDocId/missions/$docId"
+    fun sendResponse(path: String, response: String) {
         val docRef = db.document(path)
         val user = FirebaseAuth.getInstance().currentUser
         val name = user!!.displayName
@@ -61,9 +60,8 @@ class FirestoreRemoteDataSource {
         }
     }
 
-    fun fetchMission(teamDocId: String, docID: String) : DocumentReference {
+    fun fetchMission(path: String) : DocumentReference {
         // Get missions within a certain timeframe
-        val path = "/teams/${teamDocId}/missions/${docID}"
         val documentReference = db.document(path)
         return documentReference
     }
@@ -80,14 +78,13 @@ class FirestoreRemoteDataSource {
 
 
 
-    fun putAlarm(mission: Mission, teamDocId: String, docId: String) {
+    fun putAlarm(mission: Mission, myPath: String) {
         val alarm = Alarm(
             description = mission.description,
             action = mission.needForAction,
-            teamDocId = teamDocId,
-            missionDocID = docId
+            path = myPath
         )
-        db.collection("alarms").add(alarm)
+        db.collection("${myPath}/alarms").add(alarm)
             .addOnSuccessListener {
                 var i  = 1
                 //TODO - handle success
@@ -100,9 +97,8 @@ class FirestoreRemoteDataSource {
 
 
 
-    fun deleteResponse(teamDocId: String, docId: String) {
+    fun deleteResponse(path: String) {
         // removes a response from the mission document
-        val path = "/teams/$teamDocId/missions/$docId"
         val docRef = db.document(path)
         val user = FirebaseAuth.getInstance().currentUser
         val name = user!!.displayName

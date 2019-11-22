@@ -11,8 +11,7 @@ import com.google.firebase.firestore.ktx.toObject
 class DetailViewModel: ViewModel() {
 
 
-    lateinit var docID: String
-    lateinit var teamDocId: String
+    lateinit var path: String
     private var firebaseRepository = FirestoreRemoteDataSource()
     val mission: MutableLiveData<Mission> = MutableLiveData()
     var registration : ListenerRegistration? = null
@@ -29,13 +28,16 @@ class DetailViewModel: ViewModel() {
             // Remove the old listener
             registration!!.remove()
         }
-        registration = firebaseRepository.fetchMission(teamDocId, docID).addSnapshotListener(EventListener<DocumentSnapshot> { value, error ->
+        registration = firebaseRepository.fetchMission(path).addSnapshotListener(EventListener<DocumentSnapshot> { value, error ->
             if (error != null) {
                 Log.w(TAG, "Listen failed.", error)
                 mission.value = null
                 return@EventListener
             }
-            val missionFromDB = value?.toObject<Mission>()
+            val myPath = value!!.reference.path
+            val missionFromDB = value.toObject<Mission>()?.apply {
+                path = myPath
+            }
             mission.value = missionFromDB
         }
         )

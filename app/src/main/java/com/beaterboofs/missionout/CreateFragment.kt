@@ -121,7 +121,8 @@ class CreateMissionFragment : Fragment() {
             location = geopoint,
             locationDescription = locationDescription,
             needForAction = needForAction,
-            responseMap = null
+            responseMap = null,
+            path = null
         )
     }
 

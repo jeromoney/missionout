@@ -3,6 +3,5 @@ package com.beaterboofs.missionout.DataClass
 data class Alarm(
     val description: String,
     val action: String?,
-    val missionDocID: String,
-    val teamDocId: String
+    val path: String
 )

@@ -69,7 +69,11 @@ class OverviewFragment : Fragment() {
                         return@Observer
                     }
                     // update recycler view
-                    viewAdapter = MissionAdapter(missions, { missionInstance : Mission -> missionItemClicked(missionInstance.key!!) })
+                    viewAdapter = MissionAdapter(missions, {
+                            missionInstance : Mission ->
+                        val path = "/teams/${loginViewModel.teamDocID.value}/missions/${missionInstance.key!!}"
+                        missionItemClicked(path)
+                    })
                     recyclerView = view!!.findViewById<RecyclerView>(R.id.overview_recycler_view).apply {
                         setHasFixedSize(true)
                         layoutManager = viewManager
@@ -134,10 +138,10 @@ class OverviewFragment : Fragment() {
         fun onFragmentInteraction(uri: Uri)
     }
 
-    private fun missionItemClicked(missionDocID: String){
+    private fun missionItemClicked(path: String){
         // Launch Mission Activity Detail with clicked item
         // Navigate to detail fragment
-        val action = OverviewFragmentDirections.actionOverviewFragmentToDetailMissionFragment(missionDocID)
+        val action = OverviewFragmentDirections.actionOverviewFragmentToDetailMissionFragment(path)
         findNavController().navigate(action)
     }
 }

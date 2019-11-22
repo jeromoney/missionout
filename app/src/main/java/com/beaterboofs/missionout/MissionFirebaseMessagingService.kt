@@ -46,12 +46,11 @@ class MissionFirebaseMessagingService : FirebaseMessagingService() {
         createNotificationChannel()
         val header = p0.data["description"]
         val body = p0.data["action"]
-        val docId = p0.data["docId"]
+        val path = p0.data["path"]
         val notificationId = 12344
         // Create an explicit intent for an Activity in your app
-        // TODO - create deep link to detail page
-        val uri = "missionout://www.beaterboofs.com/${docId}"
-
+        // TODO - create deep link to detail page. This existing method is causing it to crash
+        val uri = "missionout://www.beaterboofs.com/${path}"
 
         val notificationIntent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
         val pendingIntent = PendingIntent.getActivity(baseContext, 0, notificationIntent,0)
@@ -82,7 +81,6 @@ class MissionFirebaseMessagingService : FirebaseMessagingService() {
             .setContentIntent(pendingIntent)
             .setDeleteIntent(pendingIntent)
             .setSound(defaultSoundUri)
-
 
         // show notifcation
         with(NotificationManagerCompat.from(this)) {
