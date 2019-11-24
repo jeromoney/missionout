@@ -1,7 +1,6 @@
-package com.beaterboofs.missionout
+package com.beaterboofs.missionout.data
 
 import androidx.databinding.BaseObservable
-import androidx.databinding.Bindable
 
 class CreateViewModel : BaseObservable() {
     var mission = Mission()

@@ -1,4 +1,4 @@
-package com.beaterboofs.missionout
+package com.beaterboofs.missionout.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,13 +22,15 @@ class LoginViewModel : ViewModel() {
         authenticationState.apply {
             if (auth.currentUser == null){
                 // User is not logged in
-                value = AuthenticationState.UNAUTHENTICATED
+                value =
+                    AuthenticationState.UNAUTHENTICATED
                 user.value = null
                 teamDocID.value = null
                 editor.value = false
             }
             else {
-                value = AuthenticationState.AUTHENTICATED
+                value =
+                    AuthenticationState.AUTHENTICATED
                 user.value = auth.currentUser
                 updateClaims()
             }
@@ -36,11 +38,13 @@ class LoginViewModel : ViewModel() {
     }
 
     fun refuseAuthentication(){
-        authenticationState.value = AuthenticationState.UNAUTHENTICATED
+        authenticationState.value =
+            AuthenticationState.UNAUTHENTICATED
     }
 
     fun authenticate(username: String, password: String){
-        authenticationState.value = AuthenticationState.AUTHENTICATED
+        authenticationState.value =
+            AuthenticationState.AUTHENTICATED
     }
 
     fun updateClaims() {

@@ -16,8 +16,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.beaterboofs.missionout.*
+import com.beaterboofs.missionout.data.DetailViewModel
+import com.beaterboofs.missionout.data.LoginViewModel
 import com.beaterboofs.missionout.util.UIUtil.getVisibility
 import com.beaterboofs.missionout.databinding.FragmentDetailBinding
+import com.beaterboofs.missionout.repository.FirestoreRemoteDataSource
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 

@@ -1,9 +1,8 @@
-package com.beaterboofs.missionout
+package com.beaterboofs.missionout.repository
 
 import android.util.Log
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment.findNavController
-import com.beaterboofs.missionout.DataClass.Alarm
+import com.beaterboofs.missionout.data.Alarm
+import com.beaterboofs.missionout.data.Mission
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*

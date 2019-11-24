@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.beaterboofs.missionout.LoginViewModel
+import com.beaterboofs.missionout.data.LoginViewModel
 import com.beaterboofs.missionout.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount

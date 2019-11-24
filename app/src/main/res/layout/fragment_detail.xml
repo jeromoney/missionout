@@ -7,7 +7,7 @@
     <data>
         <variable
             name="missionInstance"
-            type="com.beaterboofs.missionout.Mission"
+            type="com.beaterboofs.missionout.data.Mission"
             />
     </data>
 

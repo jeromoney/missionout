@@ -1,4 +1,4 @@
-package com.beaterboofs.missionout
+package com.beaterboofs.missionout.data
 
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentId

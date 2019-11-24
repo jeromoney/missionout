@@ -1,4 +1,4 @@
-package com.beaterboofs.missionout.DataClass
+package com.beaterboofs.missionout.data
 // TODO - remove null allowment
 data class Alarm(
     val description: String,

@@ -7,7 +7,7 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment
-import com.beaterboofs.missionout.LoginViewModel
+import com.beaterboofs.missionout.data.LoginViewModel
 import com.beaterboofs.missionout.R
 import kotlinx.android.synthetic.main.navigation_activity.*
 

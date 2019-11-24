@@ -1,8 +1,9 @@
-package com.beaterboofs.missionout
+package com.beaterboofs.missionout.data
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.beaterboofs.missionout.repository.FirestoreRemoteDataSource
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.ListenerRegistration
@@ -12,7 +13,8 @@ class DetailViewModel: ViewModel() {
 
 
     lateinit var path: String
-    private var firebaseRepository = FirestoreRemoteDataSource()
+    private var firebaseRepository =
+        FirestoreRemoteDataSource()
     val mission: MutableLiveData<Mission> = MutableLiveData()
     var registration : ListenerRegistration? = null
 

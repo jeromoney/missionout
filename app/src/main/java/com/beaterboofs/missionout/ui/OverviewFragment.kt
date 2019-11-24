@@ -13,6 +13,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beaterboofs.missionout.*
+import com.beaterboofs.missionout.data.LoginViewModel
+import com.beaterboofs.missionout.data.Mission
+import com.beaterboofs.missionout.data.OverviewViewModel
 import com.beaterboofs.missionout.util.UIUtil.getVisibility
 import kotlinx.android.synthetic.main.overview_fragment.*
 

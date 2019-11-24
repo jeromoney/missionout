@@ -21,6 +21,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.beaterboofs.missionout.*
+import com.beaterboofs.missionout.data.LoginViewModel
+import com.beaterboofs.missionout.data.Mission
+import com.beaterboofs.missionout.repository.FirestoreRemoteDataSource
 import com.beaterboofs.missionout.util.LATITUDE
 import com.beaterboofs.missionout.util.LONGITUDE
 import com.beaterboofs.missionout.util.LatLon

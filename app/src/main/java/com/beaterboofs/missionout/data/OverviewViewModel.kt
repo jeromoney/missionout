@@ -1,15 +1,17 @@
-package com.beaterboofs.missionout
+package com.beaterboofs.missionout.data
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.beaterboofs.missionout.repository.FirestoreRemoteDataSource
 import com.google.firebase.firestore.ListenerRegistration
 
 
 class OverviewViewModel : ViewModel() {
     val missions: MutableLiveData<List<Mission>> = MutableLiveData()
     var registration : ListenerRegistration? = null
-    private var firebaseRepository = FirestoreRemoteDataSource()
+    private var firebaseRepository =
+        FirestoreRemoteDataSource()
     lateinit var teamDocID: String
 
 

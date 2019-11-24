@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.beaterboofs.missionout.Mission
+import com.beaterboofs.missionout.data.Mission
 import com.beaterboofs.missionout.R
 import java.util.*
 

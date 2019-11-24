@@ -1,4 +1,4 @@
-package com.beaterboofs.missionout
+package com.beaterboofs.missionout.repository
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.beaterboofs.missionout.R
 import com.beaterboofs.missionout.util.SharedPrefUtil.getToken
 import com.beaterboofs.missionout.util.SharedPrefUtil.setToken
 import com.google.firebase.auth.FirebaseAuth
@@ -98,7 +99,8 @@ class MissionFirebaseMessagingService : FirebaseMessagingService() {
         setToken(applicationContext, token)
         val userUID = FirebaseAuth.getInstance().uid ?: return
         GlobalScope.launch {
-            FirestoreRemoteDataSource().putToken(userUID, token, oldToken)
+            FirestoreRemoteDataSource()
+                .putToken(userUID, token, oldToken)
         }
     }
 }
