@@ -1,4 +1,4 @@
-package com.beaterboofs.missionout
+package com.beaterboofs.missionout.ui
 
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +7,8 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment
+import com.beaterboofs.missionout.LoginViewModel
+import com.beaterboofs.missionout.R
 import kotlinx.android.synthetic.main.navigation_activity.*
 
 

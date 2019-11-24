@@ -1,4 +1,4 @@
-package com.beaterboofs.missionout
+package com.beaterboofs.missionout.ui
 
 import android.net.Uri
 import android.os.Bundle
@@ -20,9 +20,10 @@ import androidx.core.view.children
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import com.beaterboofs.missionout.Util.LATITUDE
-import com.beaterboofs.missionout.Util.LONGITUDE
-import com.beaterboofs.missionout.Util.LatLon
+import com.beaterboofs.missionout.*
+import com.beaterboofs.missionout.util.LATITUDE
+import com.beaterboofs.missionout.util.LONGITUDE
+import com.beaterboofs.missionout.util.LatLon
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 
@@ -69,10 +70,14 @@ class CreateMissionFragment : Fragment() {
             val missionInstance = getMissionFromText()
             CoroutineScope(Dispatchers.Main).launch {
                 val teamDocID = loginViewModel.teamDocID.value!!
-                val docID = FirestoreRemoteDataSource().putMission(teamDocID, missionInstance)
+                val docID = FirestoreRemoteDataSource()
+                    .putMission(teamDocID, missionInstance)
                 //Stop spinner
                 if (docID != null) {
-                    val action = MobileNavigationDirections.actionGlobalDetailFragment(docID)
+                    val action =
+                        MobileNavigationDirections.actionGlobalDetailFragment(
+                            docID
+                        )
                     val options = NavOptions.Builder().setLaunchSingleTop(true).build()
                     findNavController().navigate(action,options)
                 }

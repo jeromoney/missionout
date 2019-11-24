@@ -1,4 +1,4 @@
-package com.beaterboofs.missionout
+package com.beaterboofs.missionout.ui
 
 import android.content.Context
 import android.content.Intent
@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.beaterboofs.missionout.LoginViewModel
+import com.beaterboofs.missionout.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -24,10 +26,6 @@ import kotlinx.android.synthetic.main.fragment_sign_in.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -96,17 +94,12 @@ class SignInFragment : Fragment(), View.OnClickListener {
                 firebaseAuthWithGoogle(account!!)
             }
             catch (e: ApiException){
-                Log.w(TAG, getString(R.string.failed_google_signin), e)
+                Log.w(
+                    TAG, getString(
+                        R.string.failed_google_signin
+                    ), e)
             }
         }
-    }
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-
     }
 
     override fun onCreateView(
@@ -186,7 +179,8 @@ class SignInFragment : Fragment(), View.OnClickListener {
 
                     // Change state of viewmodel to show that user is logged in
                     loginViewModel.apply {
-                        authenticationState.value = LoginViewModel.AuthenticationState.AUTHENTICATED
+                        authenticationState.value =
+                            LoginViewModel.AuthenticationState.AUTHENTICATED
                         user.value = firebaseUser
                         updateClaims()
                     }
@@ -199,7 +193,8 @@ class SignInFragment : Fragment(), View.OnClickListener {
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
                     Snackbar.make(main_layout, "Authentication Failed.", Snackbar.LENGTH_SHORT)
                         .show()
-                    loginViewModel.authenticationState.value = LoginViewModel.AuthenticationState.UNAUTHENTICATED
+                    loginViewModel.authenticationState.value =
+                        LoginViewModel.AuthenticationState.UNAUTHENTICATED
                     updateUI(null)
                 }
 

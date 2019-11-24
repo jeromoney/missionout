@@ -1,9 +1,8 @@
-package com.beaterboofs.missionout.Util
+package com.beaterboofs.missionout.util
 
 import android.content.Context
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import com.google.firebase.auth.FirebaseUser
 
 object SharedPrefUtil {
 

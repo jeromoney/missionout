@@ -1,13 +1,12 @@
-package com.beaterboofs.missionout
+package com.beaterboofs.missionout.ui
 
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import com.beaterboofs.missionout.Mission
+import com.beaterboofs.missionout.R
 import java.util.*
 
 class MissionAdapter(var missionDataset: List<Mission>, val clickListener: (Mission) -> Unit) :
@@ -23,7 +22,9 @@ class MissionAdapter(var missionDataset: List<Mission>, val clickListener: (Miss
         val cardView = LayoutInflater.from(parent.context)
             .inflate(R.layout.content_mission_overview, parent, false) as CardView
         // set view's size, margins, padding and layout parameters
-        return MissionViewHolder(cardView)
+        return MissionViewHolder(
+            cardView
+        )
     }
 
 

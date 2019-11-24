@@ -1,4 +1,4 @@
-package com.beaterboofs.missionout
+package com.beaterboofs.missionout.ui
 
 import android.content.Context
 import android.net.Uri
@@ -12,7 +12,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.beaterboofs.missionout.Util.UIUtil.getVisibility
+import com.beaterboofs.missionout.*
+import com.beaterboofs.missionout.util.UIUtil.getVisibility
 import kotlinx.android.synthetic.main.overview_fragment.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -69,11 +70,13 @@ class OverviewFragment : Fragment() {
                         return@Observer
                     }
                     // update recycler view
-                    viewAdapter = MissionAdapter(missions, {
-                            missionInstance : Mission ->
-                        val path = "/teams/${loginViewModel.teamDocID.value}/missions/${missionInstance.key!!}"
-                        missionItemClicked(path)
-                    })
+                    viewAdapter = MissionAdapter(
+                        missions,
+                        { missionInstance: Mission ->
+                            val path =
+                                "/teams/${loginViewModel.teamDocID.value}/missions/${missionInstance.key!!}"
+                            missionItemClicked(path)
+                        })
                     recyclerView = view!!.findViewById<RecyclerView>(R.id.overview_recycler_view).apply {
                         setHasFixedSize(true)
                         layoutManager = viewManager
@@ -141,7 +144,10 @@ class OverviewFragment : Fragment() {
     private fun missionItemClicked(path: String){
         // Launch Mission Activity Detail with clicked item
         // Navigate to detail fragment
-        val action = OverviewFragmentDirections.actionOverviewFragmentToDetailMissionFragment(path)
+        val action =
+            OverviewFragmentDirections.actionOverviewFragmentToDetailMissionFragment(
+                path
+            )
         findNavController().navigate(action)
     }
 }

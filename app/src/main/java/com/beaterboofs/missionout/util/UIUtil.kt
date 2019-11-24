@@ -1,4 +1,4 @@
-package com.beaterboofs.missionout.Util
+package com.beaterboofs.missionout.util
 
 import android.view.View
 

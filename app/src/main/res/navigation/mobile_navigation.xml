@@ -9,7 +9,7 @@
 
     <fragment
         android:id="@+id/overviewFragment"
-        android:name="com.beaterboofs.missionout.OverviewFragment"
+        android:name="com.beaterboofs.missionout.ui.OverviewFragment"
         android:label="fragment_overview"
         tools:layout="@layout/overview_fragment" >
         <action
@@ -21,7 +21,7 @@
     </fragment>
     <fragment
         android:id="@+id/signInFragment"
-        android:name="com.beaterboofs.missionout.SignInFragment"
+        android:name="com.beaterboofs.missionout.ui.SignInFragment"
         android:label="fragment_sign_in"
         tools:layout="@layout/fragment_sign_in" >
         <action
@@ -31,11 +31,11 @@
 
     <fragment
         android:id="@+id/createFragment"
-        android:name="com.beaterboofs.missionout.CreateMissionFragment"
+        android:name="com.beaterboofs.missionout.ui.CreateMissionFragment"
         android:label="CreateMissionFragment" />
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.beaterboofs.missionout.DetailFragment"
+        android:name="com.beaterboofs.missionout.ui.DetailFragment"
         android:label="DetailFragment" >
         <deepLink
             android:id="@+id/detailDeepLink"

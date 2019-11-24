@@ -12,8 +12,8 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.beaterboofs.missionout.Util.SharedPrefUtil.getToken
-import com.beaterboofs.missionout.Util.SharedPrefUtil.setToken
+import com.beaterboofs.missionout.util.SharedPrefUtil.getToken
+import com.beaterboofs.missionout.util.SharedPrefUtil.setToken
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
