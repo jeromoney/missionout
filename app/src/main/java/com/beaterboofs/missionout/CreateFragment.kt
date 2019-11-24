@@ -52,6 +52,7 @@ class CreateMissionFragment : Fragment() {
 
         // set onClickListener for FAB
         create_mission.setOnClickListener{
+
             if (isTextInError()){
                 return@setOnClickListener
             }

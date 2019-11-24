@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.ListenerRegistration
 
 
-class OverviewViewModel() : ViewModel() {
+class OverviewViewModel : ViewModel() {
     val missions: MutableLiveData<List<Mission>> = MutableLiveData()
     var registration : ListenerRegistration? = null
     private var firebaseRepository = FirestoreRemoteDataSource()
