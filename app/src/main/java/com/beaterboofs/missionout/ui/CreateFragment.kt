@@ -17,29 +17,43 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import android.app.Activity
 import androidx.core.view.children
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.beaterboofs.missionout.*
+import com.beaterboofs.missionout.data.MissionViewModel
 import com.beaterboofs.missionout.data.LoginViewModel
 import com.beaterboofs.missionout.data.Mission
+import com.beaterboofs.missionout.databinding.FragmentCreateBinding
 import com.beaterboofs.missionout.repository.FirestoreRemoteDataSource
 import com.beaterboofs.missionout.util.LATITUDE
 import com.beaterboofs.missionout.util.LONGITUDE
 import com.beaterboofs.missionout.util.LatLon
+import com.beaterboofs.missionout.util.UIUtil.getVisibility
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.firestore.FirebaseFirestoreException
+import kotlinx.coroutines.GlobalScope
+import java.lang.Exception
 
 
 class CreateMissionFragment : Fragment() {
     private val TAG = "CreateMissionFragment"
     private val loginViewModel: LoginViewModel by activityViewModels()
     private var listener: OnFragmentInteractionListener? = null
+    private val missionViewModel: MissionViewModel by activityViewModels()
+    private lateinit var binding: FragmentCreateBinding
+
 
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        missionViewModel.mission.value = Mission()
+        missionViewModel.mission.observe(viewLifecycleOwner, Observer { mission->
+            binding.missionInstance = mission})
 
         // Set data validation for lat/lon
         lat_edit_text_val.apply {
@@ -60,50 +74,45 @@ class CreateMissionFragment : Fragment() {
             if (isTextInError()){
                 return@setOnClickListener
             }
-            // Start spinner
-            createProgressBar.visibility = View.VISIBLE
+
             hideKeyboard()
-            // Hide text
-            for (child in create_mission_layout.children){
-                if (child is TextInputLayout || child is FloatingActionButton){
-                    child.visibility = View.GONE
+            val teamDocID = loginViewModel.teamDocID.value!!
+            try {
+                create_mission_layout.visibility = View.GONE
+                createProgressBar.visibility = View.VISIBLE
+                GlobalScope.launch {
+                    missionViewModel.saveMission(teamDocID)
+                    // Navigating with empty arugments means that MissionViewModel is already populated
+                    val action = CreateMissionFragmentDirections.actionCreateFragmentToDetailFragment()
+                    findNavController().navigate(action)
                 }
             }
-
-            val missionInstance = getMissionFromText()
-            CoroutineScope(Dispatchers.Main).launch {
-                val teamDocID = loginViewModel.teamDocID.value!!
-                val docID = FirestoreRemoteDataSource()
-                    .putMission(teamDocID, missionInstance)
-                //Stop spinner
-                if (docID != null) {
-                    val action =
-                        MobileNavigationDirections.actionGlobalDetailFragment(
-                            docID
-                        )
-                    val options = NavOptions.Builder().setLaunchSingleTop(true).build()
-                    findNavController().navigate(action,options)
-                }
-                else {
-                    // error occured so display snackbar
-                    createProgressBar.visibility = View.GONE
-                    Snackbar.make(it,getString(R.string.error_uploading),Snackbar.LENGTH_LONG)
-                        .also {
+            catch (e: Exception){
+                createProgressBar.visibility = View.GONE
+                create_mission_layout.visibility = View.VISIBLE
+                Snackbar.make(it,getString(R.string.error_uploading),Snackbar.LENGTH_LONG)
+                    .also {
                         it.show()
                     }
-                    // Show text
-                    for (child in create_mission_layout.children){
-                        if (child is TextInputLayout || child is FloatingActionButton){
-                            child.visibility = View.VISIBLE
-                        }
-                    }
-
-                }
             }
-
-
         }
     }
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+
+        binding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.fragment_create,
+            container,
+            false
+        )
+
+        return binding.root
+    }
+
 
     private fun hideKeyboard() {
         val imm = context!!.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -116,7 +125,7 @@ class CreateMissionFragment : Fragment() {
         val locationDescription = location_description_edit_text_val.text.toString()
         val lat = lat_edit_text_val.text.toString().toDoubleOrNull()
         val lon = lon_edit_text_val.text.toString().toDoubleOrNull()
-        var geopoint : GeoPoint?
+        val geopoint : GeoPoint?
         if (lat != null && lon != null){
             geopoint = GeoPoint(lat, lon)
         }
@@ -171,13 +180,7 @@ class CreateMissionFragment : Fragment() {
     }
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create, container, false)
-    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     fun onButtonPressed(uri: Uri) {
@@ -210,6 +213,7 @@ class CreateMissionFragment : Fragment() {
      * Returns null if everything is good, or an error message.
      */
     private fun validateLatLon(latLon: TextInputEditText, latLonConst : LatLon){
+        return
         val number = latLon.text.toString()
         val range = latLonConst.range
         if (number.isBlank() || number == "-"){

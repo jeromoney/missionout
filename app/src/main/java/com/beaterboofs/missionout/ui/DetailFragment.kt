@@ -16,7 +16,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.beaterboofs.missionout.*
-import com.beaterboofs.missionout.data.DetailViewModel
+import com.beaterboofs.missionout.data.MissionViewModel
 import com.beaterboofs.missionout.data.LoginViewModel
 import com.beaterboofs.missionout.util.UIUtil.getVisibility
 import com.beaterboofs.missionout.databinding.FragmentDetailBinding
@@ -30,9 +30,8 @@ import kotlinx.android.synthetic.main.fragment_detail.*
 class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
 
 
-    private val detailViewModel: DetailViewModel by activityViewModels()
+    private val missionViewModel: MissionViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels()
-    private lateinit var pathVal : String
     private val args: DetailFragmentArgs by navArgs()
     private lateinit var binding: FragmentDetailBinding
 
@@ -42,8 +41,8 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        pathVal = args.path
-        detailViewModel.updateModel()
+        // If user navigated here with a blank path, that means that the viewmodel is already established
+        missionViewModel.updateModel()
     }
 
     override fun onCreateView(
@@ -56,8 +55,10 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
             container,
             false
         )
-        detailViewModel.apply {
-            path = args.path
+        missionViewModel.apply {
+            if (!args.path.isNullOrBlank()){
+                path = args.path!!
+            }
             mission.observe(viewLifecycleOwner, Observer { mission->
                 binding.missionInstance = mission
                 if (mission == null){
@@ -91,13 +92,13 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
         response_chip_group.setOnCheckedChangeListener { group, checkedId ->
             if (checkedId == -1){
             // User just deselected a button so remove response
-            FirestoreRemoteDataSource().deleteResponse(pathVal)
+            FirestoreRemoteDataSource().deleteResponse(missionViewModel.path)
             return@setOnCheckedChangeListener
             }
             // Check if we entered this state by an automatic selection of viewmodel. This is detected
             // by observing the state of the chip group matches firestore database records
             val displayName = loginViewModel.user.value!!.displayName
-            val vmResponse = detailViewModel.mission.value?.responseMap?.getOrDefault(displayName, null)
+            val vmResponse = missionViewModel.mission.value?.responseMap?.getOrDefault(displayName, null)
             val chipResponse = activity!!.findViewById<Chip>(checkedId).text
             if (vmResponse == chipResponse){
                 // Entered this state when the viewmodel changed, and no actual human interaction
@@ -106,13 +107,13 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
 
             val response = group.findViewById<Chip>(checkedId).text.toString()
             FirestoreRemoteDataSource()
-                .sendResponse(pathVal,response)
+                .sendResponse(missionViewModel.path,response)
         }
 
 
         // enable click on geopoint to external uri
         map_icon.setOnClickListener {
-            val geoPoint = detailViewModel.mission.value!!.location!!
+            val geoPoint = missionViewModel.mission.value!!.location!!
             val gmmIntentUri = Uri.parse("geo:0,0?z=5&q=${geoPoint.latitude},${geoPoint.longitude}")
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
             startActivity(mapIntent)
@@ -130,7 +131,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
                 .setPositiveButton(getString(R.string.ok)) { _, _ ->
                     val mission = binding.missionInstance!!
                     FirestoreRemoteDataSource()
-                        .putAlarm(mission, pathVal)
+                        .putAlarm(mission, missionViewModel.path)
                 }
                 .show()
 
@@ -149,7 +150,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
         }
         val response = (view as TextView).text as String
         FirestoreRemoteDataSource()
-            .sendResponse(pathVal, response)
+            .sendResponse(missionViewModel.path, response)
     }
 
 }

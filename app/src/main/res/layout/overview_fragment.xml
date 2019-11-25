@@ -4,6 +4,16 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/noMissionDisplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text = "No recent missions"
+            android:visibility="gone"
+            android:paddingStart="8dp"
+            android:paddingEnd="0dp"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/overview_recycler_view"
             android:layout_width="match_parent"

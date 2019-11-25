@@ -3,6 +3,7 @@ package com.beaterboofs.missionout.ui
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -72,6 +73,10 @@ class OverviewFragment : Fragment() {
                     if (missions == null){
                         return@Observer
                     }
+
+                    // If there are no missions, display a simple message to indicate empty state
+                    noMissionDisplay.visibility = getVisibility(missions.size == 0)
+
                     // update recycler view
                     viewAdapter = MissionAdapter(
                         missions,

@@ -200,7 +200,7 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
-    <string name="mission_description_edit_text">Mission Description</string>
+    <string name="mission_description_edit_text">Mission Description*</string>
     <string name="need_for_action_edit_text">Need for Action</string>
     <string name="location_description_edit_text">Location Description</string>
     <string name="lat_edit_text">Lat</string>
