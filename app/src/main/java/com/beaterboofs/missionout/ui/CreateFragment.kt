@@ -22,6 +22,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.beaterboofs.missionout.*
 import com.beaterboofs.missionout.data.MissionViewModel
 import com.beaterboofs.missionout.data.LoginViewModel
@@ -45,13 +46,24 @@ class CreateMissionFragment : Fragment() {
     private var listener: OnFragmentInteractionListener? = null
     private val missionViewModel: MissionViewModel by activityViewModels()
     private lateinit var binding: FragmentCreateBinding
+    private val args: CreateMissionFragmentArgs by navArgs()
+
 
 
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        missionViewModel.mission.value = Mission()
+        missionViewModel.mission.apply {
+            if (args.isCreateNewMission){
+                value = Mission()
+            }
+            else {
+                // Update an existing mission
+                value = missionViewModel.mission.value
+            }
+        }
+
         missionViewModel.mission.observe(viewLifecycleOwner, Observer { mission->
             binding.missionInstance = mission})
 
@@ -78,7 +90,7 @@ class CreateMissionFragment : Fragment() {
             hideKeyboard()
             val teamDocID = loginViewModel.teamDocID.value!!
             try {
-                create_mission_layout.visibility = View.GONE
+                input_group.visibility = View.GONE
                 createProgressBar.visibility = View.VISIBLE
                 GlobalScope.launch {
                     missionViewModel.saveMission(teamDocID)
@@ -89,7 +101,7 @@ class CreateMissionFragment : Fragment() {
             }
             catch (e: Exception){
                 createProgressBar.visibility = View.GONE
-                create_mission_layout.visibility = View.VISIBLE
+                input_group.visibility = View.VISIBLE
                 Snackbar.make(it,getString(R.string.error_uploading),Snackbar.LENGTH_LONG)
                     .also {
                         it.show()

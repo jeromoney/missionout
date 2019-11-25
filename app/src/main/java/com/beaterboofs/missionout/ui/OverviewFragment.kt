@@ -55,7 +55,11 @@ class OverviewFragment : Fragment() {
             // Floating action button with create should only be shown to editors
             fab.visibility = getVisibility(isEditor)
             fab?.setOnClickListener {
-                findNavController().navigate(R.id.createFragment)
+                val action =
+                    OverviewFragmentDirections.actionOverviewFragmentToCreateMissionFragment(
+                        isCreateNewMission = true
+                    )
+                findNavController().navigate(action)
             }
         })
 

@@ -106,6 +106,13 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@android:drawable/ic_menu_save" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/input_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="create_mission,mission_description_edit_text,location_description_edit_text,lat_edit_text,lon_edit_text" />
+
         <ProgressBar
             android:id="@+id/createProgressBar"
             style="?android:attr/progressBarStyle"

@@ -14,6 +14,7 @@ import androidx.core.view.size
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.beaterboofs.missionout.*
 import com.beaterboofs.missionout.data.MissionViewModel
@@ -118,6 +119,12 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
             startActivity(mapIntent)
         }
+        // set up edit button
+        edit_text_button.setOnClickListener{
+            val action = DetailFragmentDirections.actionDetailFragmentToCreateFragment(isCreateNewMission = false)
+            findNavController().navigate(action)
+        }
+
 
         // set up raise alarm
         alert_text_button.setOnClickListener {
