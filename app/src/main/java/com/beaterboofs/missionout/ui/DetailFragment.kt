@@ -126,7 +126,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener, View.OnLon
 
             val response = group.findViewById<Chip>(checkedId).text.toString()
             FirestoreRemoteDataSource()
-                .putResponse(missionViewModel.path,response)
+                .sendResponse(missionViewModel.path,response)
         }
     }
 
@@ -141,7 +141,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener, View.OnLon
         }
         val response = (view as TextView).text as String
         FirestoreRemoteDataSource()
-            .putResponse(missionViewModel.path, response)
+            .sendResponse(missionViewModel.path, response)
     }
 
     fun pageTeam(){

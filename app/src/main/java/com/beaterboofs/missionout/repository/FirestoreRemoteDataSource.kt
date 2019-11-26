@@ -15,11 +15,19 @@ class FirestoreRemoteDataSource {
     val db = Firebase.firestore
 
 
-    fun putResponse(path: String, response: String) {
+    fun sendResponse(path: String, response: String) {
         val docRef = db.document(path)
         val user = FirebaseAuth.getInstance().currentUser
         val name = user!!.displayName
         docRef.update("responseMap.${name}", response)
+
+        // send location to server if responding
+        if (response == "Responding"){
+            sendLocation()
+        }
+    }
+
+    private fun sendLocation() {
     }
 
     suspend fun putMission(teamDocId: String, missionInstance: Mission) : String? {
