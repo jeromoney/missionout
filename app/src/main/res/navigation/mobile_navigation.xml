@@ -50,9 +50,6 @@
             app:argType="string"
             android:defaultValue="@null"
             app:nullable="true"/>
-        <action
-            android:id="@+id/action_detailFragment_to_createFragment"
-            app:destination="@id/createFragment" />
     </fragment>
     <action
         android:id="@+id/action_global_detailFragment"

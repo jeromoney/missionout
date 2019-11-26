@@ -13,8 +13,9 @@ data class Mission(
     @ServerTimestamp var  time: Timestamp? = null,
     @PropertyName("location")  var location: GeoPoint?= null,
     @PropertyName("needForAction") var needForAction: String?= null,
-    @PropertyName("locationDescription") var locationDescription: String?= null,
+    @PropertyName("locationDescription") var locationDescription: String,
     @PropertyName("responseMap") var responseMap: HashMap<String,String>?= null,
+    @PropertyName("isStoodDown") var isStoodDown: Boolean = false,
     var path: String?= null) {
-    constructor() : this(description = "" )
+    constructor() : this(description = "", locationDescription = "")
 }

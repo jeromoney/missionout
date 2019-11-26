@@ -39,6 +39,7 @@ class MissionViewModel: ViewModel() {
             val myPath = value!!.reference.path
             val missionFromDB = value.toObject<Mission>()?.apply {
                 path = myPath
+                isStoodDown = value.getBoolean("isStoodDown")?: false
             }
             mission.value = missionFromDB
         }
@@ -65,7 +66,21 @@ class MissionViewModel: ViewModel() {
     }
 
     private fun isMissionValid(): Boolean {
+        val missionInstance = mission.value!!
+        missionInstance.apply {
+            if (description.isBlank()){
+                return false
+            }
+            if (locationDescription.isNullOrBlank()){
+                return false
+            }
+        }
+
         return true
+    }
+
+    fun standDownMission(isStoodDown: Boolean) {
+        FirestoreRemoteDataSource().standDownMission(path,isStoodDown)
     }
 }
 

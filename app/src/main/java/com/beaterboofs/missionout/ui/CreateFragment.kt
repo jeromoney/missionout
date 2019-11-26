@@ -98,7 +98,6 @@ class CreateMissionFragment : Fragment() {
             container,
             false
         )
-
         return binding.root
     }
 
@@ -106,28 +105,6 @@ class CreateMissionFragment : Fragment() {
     private fun hideKeyboard() {
         val imm = context!!.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
-    }
-
-    private fun getMissionFromText(): Mission {
-        val description = mission_description_edit_text_val.text.toString()
-        val needForAction = need_for_action_edit_text_val.text.toString()
-        val locationDescription = location_description_edit_text_val.text.toString()
-        val lat = lat_edit_text_val.text.toString().toDoubleOrNull()
-        val lon = lon_edit_text_val.text.toString().toDoubleOrNull()
-        val geopoint : GeoPoint?
-        if (lat != null && lon != null){
-            geopoint = GeoPoint(lat, lon)
-        }
-        else {
-            geopoint = null
-        }
-
-        return Mission(
-            description = description,
-            location = geopoint,
-            locationDescription = locationDescription,
-            needForAction = needForAction
-        )
     }
 
     private fun isTextInError(): Boolean { // TODO - is there a better way to do data validation?

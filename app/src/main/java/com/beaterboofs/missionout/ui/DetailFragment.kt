@@ -14,7 +14,6 @@ import androidx.core.view.size
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.beaterboofs.missionout.*
 import com.beaterboofs.missionout.data.MissionViewModel
@@ -24,18 +23,20 @@ import com.beaterboofs.missionout.databinding.FragmentDetailBinding
 import com.beaterboofs.missionout.repository.FirestoreRemoteDataSource
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.firebase.firestore.GeoPoint
 
 import kotlinx.android.synthetic.main.fragment_detail.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
-class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
+class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener, View.OnLongClickListener, View.OnClickListener {
 
 
     private val missionViewModel: MissionViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels()
     private val args: DetailFragmentArgs by navArgs()
     private lateinit var binding: FragmentDetailBinding
+    private var isStoodDown = false
 
     companion object{
         private val TAG = "DetailFragment"
@@ -45,6 +46,16 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
         super.onViewCreated(view, savedInstanceState)
         // If user navigated here with a blank path, that means that the viewmodel is already established
         missionViewModel.updateModel()
+
+        // set up long click listener for editing
+        detail_header_text.setOnLongClickListener(this)
+        detail_location_text.setOnLongClickListener(this)
+        detail_description_text.setOnLongClickListener(this)
+
+        alert_text_button.setOnClickListener(this)
+        lock_button.setOnClickListener(this)
+        map_button.setOnClickListener(this)
+        slack_button.setOnClickListener(this)
     }
 
     override fun onCreateView(
@@ -66,6 +77,12 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
                 if (mission == null){
                     return@Observer
                 }
+                isStoodDown = mission.isStoodDown
+                standown_textview.visibility = getVisibility(isStoodDown)
+                setLockIcon()
+                response_chip_group.visibility = getVisibility(!mission.isStoodDown)
+                detail_response_text.visibility = getVisibility(!mission.isStoodDown)
+
                 // see if user RSVPed to mission. Set that chip as checked
                 val displayName = loginViewModel.user.value!!.displayName
                 val response = mission.responseMap?.getOrDefault(displayName, null) ?: return@Observer
@@ -75,16 +92,16 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
                         response_chip_group.check(chip.id)
                     }
                 }
+
                 // check if lat/lon is given and set visibility of map icon accordingly
-                map_icon.visibility = getVisibility(mission.location != null)
+                map_button.visibility = getVisibility(mission.location != null)
             })
         }
 
         loginViewModel.editor.observe(viewLifecycleOwner, Observer { isEditor ->
             // Floating action bar with alarm should only be shown to editors
-            edit_text_button.visibility = getVisibility(isEditor)
             alert_text_button.visibility = getVisibility(isEditor)
-
+            lock_button.visibility = getVisibility(isEditor)
         })
         return binding.root
     }
@@ -109,41 +126,8 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
 
             val response = group.findViewById<Chip>(checkedId).text.toString()
             FirestoreRemoteDataSource()
-                .sendResponse(missionViewModel.path,response)
+                .putResponse(missionViewModel.path,response)
         }
-
-
-        // enable click on geopoint to external uri
-        map_icon.setOnClickListener {
-            val geoPoint = missionViewModel.mission.value!!.location!!
-            val gmmIntentUri = Uri.parse("geo:0,0?z=5&q=${geoPoint.latitude},${geoPoint.longitude}")
-            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-            startActivity(mapIntent)
-        }
-        // set up edit button
-        edit_text_button.setOnClickListener{
-            val action = DetailFragmentDirections.actionDetailFragmentToCreateFragment()
-            findNavController().navigate(action)
-        }
-
-        // set up raise alarm
-        alert_text_button.setOnClickListener {
-            // People with editor status (TODO - add check in database) create a document in the
-            // "alarms" collection. Google Cloud Function will then run send out the alarm.
-            MaterialAlertDialogBuilder(context,
-                R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Centered
-            )
-                .setTitle(getString(R.string.page_the_team))
-                .setMessage(getString(R.string.page_message))
-                .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                    val mission = binding.missionInstance!!
-                    FirestoreRemoteDataSource()
-                        .putAlarm(mission, missionViewModel.path)
-                }
-                .show()
-
-        }
-
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -157,7 +141,77 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
         }
         val response = (view as TextView).text as String
         FirestoreRemoteDataSource()
-            .sendResponse(missionViewModel.path, response)
+            .putResponse(missionViewModel.path, response)
+    }
+
+    fun pageTeam(){
+        // People with editor status (TODO - add check in database) create a document in the
+        // "alarms" collection. Google Cloud Function will then run send out the alarm.
+        MaterialAlertDialogBuilder(context,
+            R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Centered
+        )
+            .setTitle(getString(R.string.page_the_team))
+            .setMessage(getString(R.string.page_message))
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                val mission = binding.missionInstance!!
+                FirestoreRemoteDataSource()
+                    .putAlarm(mission, missionViewModel.path)
+            }
+            .show()
+    }
+    fun standDownMission(){
+        isStoodDown = !isStoodDown
+        missionViewModel.standDownMission(isStoodDown)
+        setLockIcon()
+        standown_textview.visibility = getVisibility(!isStoodDown)
+    }
+
+    fun setLockIcon(){
+        if(isStoodDown){
+            lock_button.setImageDrawable(context!!.getDrawable(R.drawable.twotone_lock_black_36))
+        }
+        else{
+            lock_button.setImageDrawable(context!!.getDrawable(R.drawable.twotone_lock_open_black_36))
+        }
+    }
+
+    /**
+     * When user holds down on a field, the field becomes editable
+     */
+    override fun onLongClick(v: View?) : Boolean {
+        return true
+        val i = v?.id
+        val textView = view!!.findViewById<TextView>(i!!)
+        textView.visibility = View.GONE
+        return true
+    }
+
+    override fun onClick(v: View?) {
+        val i = v?.id
+        when(i) {
+            R.id.map_button -> launchMapIntent()
+            R.id.alert_text_button -> pageTeam()
+            R.id.lock_button -> standDownMission()
+            R.id.slack_button -> launchSlackIntent()
+        }
+    }
+
+    private fun launchSlackIntent() {
+        GlobalScope.launch {
+            val slackTeamData = loginViewModel.slackTeamData.value!!
+            val team_id = slackTeamData!!["team_id"]
+            val channel_id = slackTeamData["channel_id"]
+            val uri = Uri.parse("slack://channel?team=${team_id}&id=${channel_id}")
+            val slackIntent = Intent(Intent.ACTION_VIEW, uri)
+            startActivity(slackIntent)
+        }
+    }
+
+    private fun launchMapIntent(){
+        val geoPoint = missionViewModel.mission.value!!.location!!
+        val gmmIntentUri = Uri.parse("geo:0,0?z=5&q=${geoPoint.latitude},${geoPoint.longitude}")
+        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+        startActivity(mapIntent)
     }
 
 }

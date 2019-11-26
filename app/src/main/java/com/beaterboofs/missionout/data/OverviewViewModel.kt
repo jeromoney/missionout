@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.beaterboofs.missionout.repository.FirestoreRemoteDataSource
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.ktx.toObject
 
 
 class OverviewViewModel : ViewModel() {

@@ -15,7 +15,7 @@ class FirestoreRemoteDataSource {
     val db = Firebase.firestore
 
 
-    fun sendResponse(path: String, response: String) {
+    fun putResponse(path: String, response: String) {
         val docRef = db.document(path)
         val user = FirebaseAuth.getInstance().currentUser
         val name = user!!.displayName
@@ -118,6 +118,29 @@ class FirestoreRemoteDataSource {
             Log.e(TAG, e.toString())
             return null
         }
+    }
+
+    suspend fun fetchSlackTeam() : Map<String,String>?{
+        val path = "/teams/raux5KIhuIL84bBmPSPs"
+        var result : Map<String,String>? = null
+        try{
+            val documentReference  = db.document(path).get().await()
+            result = documentReference.data as Map<String, String>
+        }
+        catch (error : FirebaseFirestoreException){
+            Log.e(TAG,error.toString())
+            return null
+        }
+        finally {
+            return result!!.get("slackTeam") as Map<String,String>
+        }
+    }
+
+    fun standDownMission(path: String, stoodDown: Boolean) {
+        val docRef = db.document(path)
+        docRef.update("isStoodDown", stoodDown)
+            .addOnSuccessListener { Log.d(TAG, "Standdown status successfully updated!") }
+            .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
     }
 
 }
