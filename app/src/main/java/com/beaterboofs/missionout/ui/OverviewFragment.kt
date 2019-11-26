@@ -56,9 +56,7 @@ class OverviewFragment : Fragment() {
             fab.visibility = getVisibility(isEditor)
             fab?.setOnClickListener {
                 val action =
-                    OverviewFragmentDirections.actionOverviewFragmentToCreateMissionFragment(
-                        isCreateNewMission = true
-                    )
+                    OverviewFragmentDirections.actionOverviewFragmentToCreateMissionFragment()
                 findNavController().navigate(action)
             }
         })

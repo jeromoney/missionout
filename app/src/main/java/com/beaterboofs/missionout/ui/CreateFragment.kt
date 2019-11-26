@@ -12,15 +12,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.GeoPoint
 import kotlinx.android.synthetic.main.fragment_create.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import android.app.Activity
-import androidx.core.view.children
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.beaterboofs.missionout.*
@@ -28,14 +24,9 @@ import com.beaterboofs.missionout.data.MissionViewModel
 import com.beaterboofs.missionout.data.LoginViewModel
 import com.beaterboofs.missionout.data.Mission
 import com.beaterboofs.missionout.databinding.FragmentCreateBinding
-import com.beaterboofs.missionout.repository.FirestoreRemoteDataSource
 import com.beaterboofs.missionout.util.LATITUDE
 import com.beaterboofs.missionout.util.LONGITUDE
 import com.beaterboofs.missionout.util.LatLon
-import com.beaterboofs.missionout.util.UIUtil.getVisibility
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.GlobalScope
 import java.lang.Exception
 
@@ -46,24 +37,10 @@ class CreateMissionFragment : Fragment() {
     private var listener: OnFragmentInteractionListener? = null
     private val missionViewModel: MissionViewModel by activityViewModels()
     private lateinit var binding: FragmentCreateBinding
-    private val args: CreateMissionFragmentArgs by navArgs()
-
-
-
-
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        missionViewModel.mission.apply {
-            if (args.isCreateNewMission){
-                value = Mission()
-            }
-            else {
-                // Update an existing mission
-                value = missionViewModel.mission.value
-            }
-        }
-
+        missionViewModel.mission.value = Mission()
         missionViewModel.mission.observe(viewLifecycleOwner, Observer { mission->
             binding.missionInstance = mission})
 

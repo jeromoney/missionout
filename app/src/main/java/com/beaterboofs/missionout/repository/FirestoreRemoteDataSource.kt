@@ -107,4 +107,17 @@ class FirestoreRemoteDataSource {
         docRef.update(updates)
     }
 
+    suspend fun updateMission(missionInstance: Mission): String? {
+        try{
+            //val docRef = db.document(missionInstance.path!!).update(missionInstance).await()
+            //return docRef.path
+            return null
+        }
+        catch (e: FirebaseException){
+            // Display error to user
+            Log.e(TAG, e.toString())
+            return null
+        }
+    }
+
 }

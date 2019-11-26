@@ -1,30 +1,13 @@
 package com.beaterboofs.missionout.data
 
 import android.util.Log
-import android.view.View
-import androidx.core.view.children
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import androidx.navigation.NavOptions
-import androidx.navigation.fragment.findNavController
-import com.beaterboofs.missionout.MobileNavigationDirections
-import com.beaterboofs.missionout.R
 import com.beaterboofs.missionout.repository.FirestoreRemoteDataSource
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.toObject
-import kotlinx.android.synthetic.main.fragment_create.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 
 class MissionViewModel: ViewModel() {
 

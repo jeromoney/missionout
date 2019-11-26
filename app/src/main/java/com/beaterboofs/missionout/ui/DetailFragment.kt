@@ -24,6 +24,7 @@ import com.beaterboofs.missionout.databinding.FragmentDetailBinding
 import com.beaterboofs.missionout.repository.FirestoreRemoteDataSource
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.firestore.GeoPoint
 
 import kotlinx.android.synthetic.main.fragment_detail.*
 
@@ -121,10 +122,9 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener {
         }
         // set up edit button
         edit_text_button.setOnClickListener{
-            val action = DetailFragmentDirections.actionDetailFragmentToCreateFragment(isCreateNewMission = false)
+            val action = DetailFragmentDirections.actionDetailFragmentToCreateFragment()
             findNavController().navigate(action)
         }
-
 
         // set up raise alarm
         alert_text_button.setOnClickListener {
