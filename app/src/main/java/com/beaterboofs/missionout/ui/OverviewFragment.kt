@@ -36,7 +36,6 @@ private const val ARG_PARAM2 = "param2"
 class OverviewFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
-    private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var dataset : List<Mission>
     private val loginViewModel: LoginViewModel by activityViewModels()
     private val overviewViewModel: OverviewViewModel by activityViewModels()
@@ -60,9 +59,6 @@ class OverviewFragment : Fragment() {
                 findNavController().navigate(action)
             }
         })
-
-
-
         loginViewModel.teamDocID.observe(viewLifecycleOwner, Observer { loginTeamDocID ->
             if (loginTeamDocID == null){
                 return@Observer
@@ -89,7 +85,7 @@ class OverviewFragment : Fragment() {
                         })
                     recyclerView = view!!.findViewById<RecyclerView>(R.id.overview_recycler_view).apply {
                         setHasFixedSize(true)
-                        layoutManager = viewManager
+                        layoutManager = LinearLayoutManager(context)
                         adapter = viewAdapter
                     }
                 })
@@ -98,7 +94,6 @@ class OverviewFragment : Fragment() {
         })
 
         dataset = listOf()
-        viewManager = LinearLayoutManager(context)
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.overview_fragment, container, false)
     }

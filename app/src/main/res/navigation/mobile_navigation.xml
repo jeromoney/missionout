@@ -50,6 +50,9 @@
             app:argType="string"
             android:defaultValue="@null"
             app:nullable="true"/>
+        <action
+            android:id="@+id/action_detailFragment_to_responseFragment"
+            app:destination="@id/responseFragment" />
     </fragment>
     <action
         android:id="@+id/action_global_detailFragment"
@@ -58,5 +61,14 @@
             android:name="path"
             app:argType="string" />
     </action>
+    <fragment
+        android:id="@+id/responseFragment"
+        android:name="com.beaterboofs.missionout.ui.ResponseFragment"
+        android:label="fragment_response"
+        tools:layout="@layout/fragment_response" >
+        <argument
+            android:name="responseCollection"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

@@ -175,6 +175,14 @@
                     app:layout_constraintTop_toBottomOf="@+id/response_chip_group"
                     app:srcCompat="@drawable/twotone_chat_black_36" />
 
+                <ImageButton
+                    android:id="@+id/responseButton"
+                    android:layout_width="75dp"
+                    android:layout_height="45dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/slack_button"
+                    tools:srcCompat="@drawable/fui_ic_check_circle_black_128dp" />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

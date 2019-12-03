@@ -15,6 +15,7 @@ import androidx.core.view.size
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.beaterboofs.missionout.*
 import com.beaterboofs.missionout.data.MissionViewModel
@@ -57,6 +58,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener, View.OnLon
         lock_button.setOnClickListener(this)
         map_button.setOnClickListener(this)
         slack_button.setOnClickListener(this)
+        responseButton.setOnClickListener(this)
     }
 
     override fun onCreateView(
@@ -154,7 +156,6 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener, View.OnLon
             .setTitle(getString(R.string.page_the_team))
             .setMessage(getString(R.string.page_message))
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                val mission = binding.missionInstance!!
                 missionViewModel.sendAlarm()
             }
             .show()
@@ -193,7 +194,13 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener, View.OnLon
             R.id.alert_text_button -> pageTeam()
             R.id.lock_button -> standDownMission()
             R.id.slack_button -> launchSlackIntent()
+            R.id.responseButton -> responseFragment()
         }
+    }
+
+    private fun responseFragment() {
+        val action = DetailFragmentDirections.actionDetailFragmentToResponseFragment("fdfd")
+        findNavController().navigate(action)
     }
 
     private fun launchSlackIntent() {

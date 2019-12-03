@@ -29,7 +29,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     val editor = MutableLiveData<Boolean>()
     val slackTeamData = MutableLiveData<Map<String,String>?>()
     var geoPoint : GeoPoint? = null
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var fusedLocationClient: FusedLocationProviderClient
 
 
     init {

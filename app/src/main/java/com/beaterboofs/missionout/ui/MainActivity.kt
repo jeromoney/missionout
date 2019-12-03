@@ -13,12 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment
 import com.beaterboofs.missionout.data.LoginViewModel
 import com.beaterboofs.missionout.R
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import kotlinx.android.synthetic.main.navigation_activity.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-
 
 class MainActivity : AppCompatActivity(),
     SignInFragment.OnLoginChangeListener,

@@ -2,6 +2,7 @@ package com.beaterboofs.missionout.repository
 
 import com.beaterboofs.missionout.data.Mission
 import com.beaterboofs.missionout.data.Response
+import com.google.firebase.firestore.Query
 
 
 class Repository {
@@ -16,5 +17,9 @@ class Repository {
 
     fun sendResponse(path: String, response: Response, uid: String) {
         FirestoreRemoteDataSource().sendResponse(path, response, uid)
+    }
+
+    fun fetchResponses(responsePath: String) : Query {
+        return FirestoreRemoteDataSource().fetchResponses(responsePath)
     }
 }

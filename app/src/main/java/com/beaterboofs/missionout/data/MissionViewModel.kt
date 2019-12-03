@@ -13,8 +13,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class MissionViewModel: ViewModel() {
-
-
     lateinit var path: String
     private var firebaseRepository =
         FirestoreRemoteDataSource()
@@ -33,11 +31,11 @@ class MissionViewModel: ViewModel() {
             // Remove the old listener
             registration!!.remove()
         }
-        registration = firebaseRepository.fetchMission(path).addSnapshotListener(EventListener<DocumentSnapshot> { value, error ->
+        registration = firebaseRepository.fetchMission(path).addSnapshotListener{ value, error ->
             if (error != null) {
                 Log.w(TAG, "Listen failed.", error)
                 mission.value = null
-                return@EventListener
+                return@addSnapshotListener
             }
             val myPath = value!!.reference.path
             val missionFromDB = value.toObject<Mission>()?.apply {
@@ -46,7 +44,6 @@ class MissionViewModel: ViewModel() {
             }
             mission.value = missionFromDB
         }
-        )
     }
 
     fun sendResponse(responseStr: String, loginViewModel: LoginViewModel){
