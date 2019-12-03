@@ -221,4 +221,6 @@
     <string name="page_the_team">Page out the team?</string>
     <string name="page_message">This page will be sent out to the entire team.</string>
     <string name="ok">Ok</string>
+    <string name="slack_error">Slack not installed.</string>
+    <string name="maps_error">Maps app not installed.</string>
 </resources>

@@ -3,11 +3,14 @@ package com.beaterboofs.missionout.repository
 import android.util.Log
 import com.beaterboofs.missionout.data.Alarm
 import com.beaterboofs.missionout.data.Mission
+import com.beaterboofs.missionout.data.Response
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class FirestoreRemoteDataSource {
@@ -15,19 +18,9 @@ class FirestoreRemoteDataSource {
     val db = Firebase.firestore
 
 
-    fun sendResponse(path: String, response: String) {
-        val docRef = db.document(path)
-        val user = FirebaseAuth.getInstance().currentUser
-        val name = user!!.displayName
-        docRef.update("responseMap.${name}", response)
-
-        // send location to server if responding
-        if (response == "Responding"){
-            sendLocation()
-        }
-    }
-
-    private fun sendLocation() {
+    fun sendResponse(path: String, response: Response, uid: String) {
+        val responseCollection = db.collection("${path}/responses")
+        responseCollection.document(uid).set(response)
     }
 
     suspend fun putMission(teamDocId: String, missionInstance: Mission) : String? {
@@ -85,7 +78,7 @@ class FirestoreRemoteDataSource {
 
 
 
-    fun putAlarm(mission: Mission, myPath: String) {
+    fun sendAlarm(mission: Mission, myPath: String) {
         val alarm = Alarm(
             description = mission.description,
             action = mission.needForAction,

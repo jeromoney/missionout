@@ -1,16 +1,22 @@
 package com.beaterboofs.missionout.data
 
+import android.app.Activity
+import android.app.Application
+import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.beaterboofs.missionout.repository.FirestoreRemoteDataSource
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.GlobalScope
+import com.google.firebase.firestore.GeoPoint
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(application: Application) : AndroidViewModel(application) {
     enum class AuthenticationState {
         UNAUTHENTICATED,        // Initial state before user has authenticated
         AUTHENTICATED,          // User has logged in
@@ -22,6 +28,9 @@ class LoginViewModel : ViewModel() {
     val teamDocID = MutableLiveData<String?>()
     val editor = MutableLiveData<Boolean>()
     val slackTeamData = MutableLiveData<Map<String,String>?>()
+    var geoPoint : GeoPoint? = null
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
 
     init {
         val auth = FirebaseAuth.getInstance()
@@ -42,6 +51,16 @@ class LoginViewModel : ViewModel() {
                 updateSlackTeam()
             }
         }
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplication<Application>())
+    }
+
+    suspend fun getLocation() : GeoPoint? {
+        val location = fusedLocationClient.lastLocation.await() ?: return null
+        val lat = location.latitude
+        val lon = location.longitude
+        geoPoint = GeoPoint(lat,lon)
+        return geoPoint
     }
 
     fun refuseAuthentication(){

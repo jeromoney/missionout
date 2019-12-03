@@ -4,10 +4,13 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.beaterboofs.missionout.repository.FirestoreRemoteDataSource
+import com.beaterboofs.missionout.repository.Repository
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.toObject
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MissionViewModel: ViewModel() {
 
@@ -46,6 +49,24 @@ class MissionViewModel: ViewModel() {
         )
     }
 
+    fun sendResponse(responseStr: String, loginViewModel: LoginViewModel){
+        val uid = loginViewModel.user.value!!.uid
+        val displayName = loginViewModel.user.value!!.displayName!!
+
+        if (responseStr == "Responding"){
+            // Send current location along with response
+            GlobalScope.launch {
+                val geoPoint = loginViewModel.getLocation()
+                val response = Response(name = displayName, response = responseStr, location = geoPoint)
+                Repository().sendResponse(path, response, uid)
+            }
+        }
+        else {
+            val response = Response(name = displayName, response = responseStr)
+            Repository().sendResponse(path, response, uid)
+        }
+    }
+
     /**
      *
      */
@@ -75,12 +96,19 @@ class MissionViewModel: ViewModel() {
                 return false
             }
         }
-
         return true
     }
 
     fun standDownMission(isStoodDown: Boolean) {
         FirestoreRemoteDataSource().standDownMission(path,isStoodDown)
+    }
+
+    fun sendAlarm() {
+        Repository().sendAlarm(mission.value!!, path)
+    }
+
+    fun deleteResponse() {
+        Repository().deleteResponse(path)
     }
 }
 

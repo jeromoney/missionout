@@ -14,7 +14,7 @@ data class Mission(
     @PropertyName("location")  var location: GeoPoint?= null,
     @PropertyName("needForAction") var needForAction: String?= null,
     @PropertyName("locationDescription") var locationDescription: String,
-    @PropertyName("responseMap") var responseMap: HashMap<String,String>?= null,
+    @PropertyName("responseMap") var responseMap: HashMap<String,HashMap<String,Any>>?= null,
     @PropertyName("isStoodDown") var isStoodDown: Boolean = false,
     var path: String?= null) {
     constructor() : this(description = "", locationDescription = "")

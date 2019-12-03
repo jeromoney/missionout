@@ -1,6 +1,7 @@
 package com.beaterboofs.missionout.ui
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -20,9 +21,9 @@ import com.beaterboofs.missionout.data.MissionViewModel
 import com.beaterboofs.missionout.data.LoginViewModel
 import com.beaterboofs.missionout.util.UIUtil.getVisibility
 import com.beaterboofs.missionout.databinding.FragmentDetailBinding
-import com.beaterboofs.missionout.repository.FirestoreRemoteDataSource
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 
 import kotlinx.android.synthetic.main.fragment_detail.*
 import kotlinx.coroutines.GlobalScope
@@ -62,12 +63,14 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener, View.OnLon
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_detail,
             container,
             false
         )
+
         missionViewModel.apply {
             if (!args.path.isNullOrBlank()){
                 path = args.path!!
@@ -111,8 +114,8 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener, View.OnLon
         response_chip_group.setOnCheckedChangeListener { group, checkedId ->
             if (checkedId == -1){
             // User just deselected a button so remove response
-            FirestoreRemoteDataSource().deleteResponse(missionViewModel.path)
-            return@setOnCheckedChangeListener
+                missionViewModel.deleteResponse()
+                return@setOnCheckedChangeListener
             }
             // Check if we entered this state by an automatic selection of viewmodel. This is detected
             // by observing the state of the chip group matches firestore database records
@@ -125,8 +128,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener, View.OnLon
             }
 
             val response = group.findViewById<Chip>(checkedId).text.toString()
-            FirestoreRemoteDataSource()
-                .sendResponse(missionViewModel.path,response)
+            missionViewModel.sendResponse(response, loginViewModel)
         }
     }
 
@@ -140,8 +142,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener, View.OnLon
             return
         }
         val response = (view as TextView).text as String
-        FirestoreRemoteDataSource()
-            .sendResponse(missionViewModel.path, response)
+        missionViewModel.sendResponse(response, loginViewModel)
     }
 
     fun pageTeam(){
@@ -154,8 +155,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener, View.OnLon
             .setMessage(getString(R.string.page_message))
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
                 val mission = binding.missionInstance!!
-                FirestoreRemoteDataSource()
-                    .putAlarm(mission, missionViewModel.path)
+                missionViewModel.sendAlarm()
             }
             .show()
     }
@@ -199,11 +199,17 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener, View.OnLon
     private fun launchSlackIntent() {
         GlobalScope.launch {
             val slackTeamData = loginViewModel.slackTeamData.value!!
-            val team_id = slackTeamData!!["team_id"]
+            val team_id = slackTeamData["team_id"]
             val channel_id = slackTeamData["channel_id"]
             val uri = Uri.parse("slack://channel?team=${team_id}&id=${channel_id}")
             val slackIntent = Intent(Intent.ACTION_VIEW, uri)
-            startActivity(slackIntent)
+            try{
+                startActivity(slackIntent)
+            }
+            catch (exception: android.content.ActivityNotFoundException){
+                val snack = Snackbar.make(view!!,getString(R.string.slack_error),Snackbar.LENGTH_LONG)
+                snack.show()
+            }
         }
     }
 
@@ -211,7 +217,13 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener, View.OnLon
         val geoPoint = missionViewModel.mission.value!!.location!!
         val gmmIntentUri = Uri.parse("geo:0,0?z=5&q=${geoPoint.latitude},${geoPoint.longitude}")
         val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-        startActivity(mapIntent)
+        try{
+            startActivity(mapIntent)
+        }
+        catch (exception: android.content.ActivityNotFoundException){
+            val snack = Snackbar.make(view!!,getString(R.string.maps_error),Snackbar.LENGTH_LONG)
+            snack.show()
+        }
     }
 
 }
