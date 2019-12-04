@@ -169,10 +169,10 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener, View.OnLon
 
     fun setLockIcon(){
         if(isStoodDown){
-            lock_button.setImageDrawable(context!!.getDrawable(R.drawable.twotone_lock_black_36))
+            lock_button.setImageDrawable(context!!.getDrawable(R.drawable.ic_lock_36px))
         }
         else{
-            lock_button.setImageDrawable(context!!.getDrawable(R.drawable.twotone_lock_open_black_36))
+            lock_button.setImageDrawable(context!!.getDrawable(R.drawable.ic_lock_open_36px))
         }
     }
 
@@ -199,7 +199,7 @@ class DetailFragment : Fragment(),AdapterView.OnItemSelectedListener, View.OnLon
     }
 
     private fun responseFragment() {
-        val action = DetailFragmentDirections.actionDetailFragmentToResponseFragment("fdfd")
+        val action = DetailFragmentDirections.actionDetailFragmentToResponseFragment(missionViewModel.path)
         findNavController().navigate(action)
     }
 

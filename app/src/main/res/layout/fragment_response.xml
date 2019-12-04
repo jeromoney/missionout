@@ -1,20 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.ResponseFragment">
-
-    <TextView
-        android:id="@+id/no_response_textview"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/no_responses_yet"
-        android:visibility="gone" />
+        android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/reponse_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/team_member_label"
+            android:layout_width="wrap_content"
+            android:layout_height="52dp"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/team_member"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/response_label"
+            android:layout_width="wrap_content"
+            android:layout_height="52dp"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/status"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/team_member_label"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/driving_time_label"
+            android:layout_width="wrap_content"
+            android:layout_height="52dp"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/driving_time"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/response_label"
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/no_response_textview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/response_divider"
+            android:text="@string/no_responses_yet"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/response_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintTop_toBottomOf="@id/team_member_label"
+            tools:layout_editor_absoluteX="1dp" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reponse_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutAnimation="@anim/layout_animation"
+            app:layout_constraintTop_toBottomOf="@id/response_divider"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

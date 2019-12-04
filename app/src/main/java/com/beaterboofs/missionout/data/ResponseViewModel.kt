@@ -6,7 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.beaterboofs.missionout.repository.Repository
 import com.google.firebase.firestore.ListenerRegistration
 
-class ResponseViewModel : ViewModel() {
+class ResponseViewModel: ViewModel() {
+    lateinit var missionPath: String
     val responses: MutableLiveData<List<Response>> = MutableLiveData()
     var registration : ListenerRegistration? = null
     private var repository = Repository()
@@ -14,15 +15,10 @@ class ResponseViewModel : ViewModel() {
         val TAG = "ResponseViewModel"
     }
 
-
-    init {
-        updateResponses()
-    }
-
-    private fun updateResponses() {
+    fun updateResponses() {
         // remove the old listener
         registration?.remove()
-        registration = repository.fetchResponses("/teams/raux5KIhuIL84bBmPSPs/missions/tHT2Dr7jf7D9fRxpGoOA/responses")
+        registration = repository.fetchResponses(missionPath)
             .addSnapshotListener{values, error ->
                 if (error != null) {
                     Log.w(TAG, "Listen failed.", error)

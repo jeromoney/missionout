@@ -223,4 +223,7 @@
     <string name="slack_error">Slack not installed.</string>
     <string name="maps_error">Maps app not installed.</string>
     <string name="no_responses_yet">No responses yet</string>
+    <string name="team_member">Team Member</string>
+    <string name="driving_time">Estimated Driving Time</string>
+    <string name="status">Status</string>
 </resources>

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
-            name="response"
+            name="responseInstance"
             type="com.beaterboofs.missionout.data.Response" />
     </data>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
@@ -18,14 +20,24 @@
             android:id="@+id/response_response_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/response_name_textview"
             tools:text="Responding"
             android:padding="8dp"/>
         <TextView
             android:id="@+id/response_driving_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/response_response_textview"
             tools:text="34 mins"
             android:padding="8dp"/>
 
-    </LinearLayout>
+        <View
+            android:id="@+id/response_item_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintTop_toBottomOf="@id/response_name_textview"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -31,6 +31,8 @@ class ResponseFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        responseViewModel.missionPath = arguments!!.getString("responseCollection")!!
+        responseViewModel.updateResponses() // I don't like how the UI is seeing into the workings of the viewmodel
 
         responseViewModel.responses.observe(viewLifecycleOwner, Observer { responses ->
             // if null, just return

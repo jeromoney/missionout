@@ -79,7 +79,7 @@ class FirestoreRemoteDataSource {
     fun fetchResponses(responsePath : String) : Query {
         // Gets all responses from mission
         val query = db
-            .collection(responsePath)
+            .collection("$responsePath/responses")
             .orderBy("response", Query.Direction.ASCENDING)
         return query
     }
